@@ -32,6 +32,7 @@ public class WebSocketEndpoint {
         //把会话放入连接池
         this.session = session;
         SessionPool.sessions.put(userId, session);
+        System.out.println(111);
     }
 
     /**
