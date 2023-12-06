@@ -112,13 +112,13 @@ public class ChatDoctorActivity extends AppCompatActivity implements View.OnClic
 
         mContext=ChatDoctorActivity.this;
         //启动服务
-        startJWebSClientService();
+//        startJWebSClientService();
         //绑定服务
         bindService();
         //注册广播
-        doRegisterReceiver();
-        //检测通知是否开启
-        checkNotification(mContext);
+//        doRegisterReceiver();
+//        //检测通知是否开启
+//        checkNotification(mContext);
         findViewById();
         initView();
     }
@@ -145,8 +145,6 @@ public class ChatDoctorActivity extends AppCompatActivity implements View.OnClic
         IntentFilter filter = new IntentFilter("com.xch.servicecallback.content");
         registerReceiver(chatMessageReceiver, filter);
     }
-
-
 
     private void findViewById() {
         listView = findViewById(R.id.chatmsg_listView);

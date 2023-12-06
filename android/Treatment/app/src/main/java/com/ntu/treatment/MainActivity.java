@@ -1,11 +1,16 @@
 package com.ntu.treatment;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
 import android.se.omapi.Session;
 import android.util.Log;
@@ -49,8 +54,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            NotificationChannel channel = new NotificationChannel(
+//                    "your_channel_id",
+//                    "Your Channel Name",
+//                    NotificationManager.IMPORTANCE_DEFAULT
+//            );
+//            NotificationManager manager = getSystemService(NotificationManager.class);
+//            manager.createNotificationChannel(channel);
+//        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createNotificationChannel();
         mContext = this;
         rl_user = (RelativeLayout) findViewById(R.id.rl_user);
         mLoginButton = (Button) findViewById(R.id.login);
@@ -76,6 +92,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    "your_channel_id",
+                    "Your Channel Name",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -121,15 +148,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void doctor_showResponse(final String response){
+
         //Activity不允许在子线程中进行UI操作
         //通过该方法可以将线程切换到主线程，然后再更新UI元素
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 /*tv.setText(response);*/
+
                 System.out.println(response);
                 if (response.equals("true")){
                     System.out.println("哈哈哈哈哈哈哈");
+                    Notification notification = new NotificationCompat.Builder(MainActivity.this, "your_channel_id")
+                            .setContentTitle("Your Notification Title")
+                            .setContentText("Your Notification Text")
+                            .build();
+
+                    // 启动前台服务
+                    /*startForeground(YOUR_NOTIFICATION_ID, notification);*/
                     /**
                      * 传到ChatActivity
                      */
@@ -138,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     bundle.putString("checked_kinds",checked_kinds);
                     Intent intent = new Intent();
                     intent.putExtra("doctor_bundle_chat",bundle);
+
                     intent.setClass(MainActivity.this,ChatDoctorActivity.class);
                     startActivity(intent);
                 }else {
@@ -185,8 +222,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     bundle.putString("checked_kinds", checked_kinds);
                     bundle.putString("flag","0");
                     Intent intent = new Intent();
-                    intent.putExtra("bundles",bundle);
                     intent.setClass(MainActivity.this,FirstPageActivity.class);
+                    intent.putExtra("bundles",bundle);
+
                     startActivity(intent);
                 }else {
                     Toast.makeText(MainActivity.this, "账号或密码错误！", Toast.LENGTH_SHORT).show();

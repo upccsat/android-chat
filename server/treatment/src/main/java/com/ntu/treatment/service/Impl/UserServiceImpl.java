@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
         System.out.println(username+"***service**"+password);
         System.out.println("返回的"+doctor.getPassword());
         if (doctor.getPassword().equals(password)){
+            System.out.println("登陆成功");
             return true;
         }else {
             return false;
