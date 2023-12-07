@@ -3,6 +3,7 @@ package com.ntu.treatment.im;
 import android.annotation.SuppressLint;
 import android.app.KeyguardManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -15,6 +16,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.ntu.treatment.ChatActivity;
@@ -70,21 +72,41 @@ public class JWebSocketClientService extends Service {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public IBinder onBind(Intent intent) {
+        initSocketClient();
+//        mHandler.postDelayed(heartBeatRunnable, HEART_BEAT_RATE);//开启心跳检测
+
+        //设置service为前台服务，提高优先级
+        if (Build.VERSION.SDK_INT < 18) {
+            //Android4.3以下 ，隐藏Notification上的图标
+            startForeground(GRAY_SERVICE_ID, new Notification());
+        } else if(Build.VERSION.SDK_INT>18 && Build.VERSION.SDK_INT<25){
+            //Android4.3 - Android7.0，隐藏Notification上的图标
+            Intent innerIntent = new Intent(this, GrayInnerService.class);
+            startService(innerIntent);
+            startForeground(GRAY_SERVICE_ID, new Notification());
+        }else{
+            //Android7.0以上app启动后通知栏会出现一条"正在运行"的通知
+            startForegroundService(new Intent(this,GrayInnerService.class));
+        }
+
+        acquireWakeLock();
         return mBinder;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //初始化websocket
         initSocketClient();
-        mHandler.postDelayed(heartBeatRunnable, HEART_BEAT_RATE);//开启心跳检测
+//        mHandler.postDelayed(heartBeatRunnable, HEART_BEAT_RATE);//开启心跳检测
 
         //设置service为前台服务，提高优先级
         if (Build.VERSION.SDK_INT < 18) {

@@ -116,9 +116,9 @@ public class ChatDoctorActivity extends AppCompatActivity implements View.OnClic
         //绑定服务
         bindService();
         //注册广播
-//        doRegisterReceiver();
-//        //检测通知是否开启
-//        checkNotification(mContext);
+        doRegisterReceiver();
+        //检测通知是否开启
+        checkNotification(mContext);
         findViewById();
         initView();
     }
@@ -208,8 +208,10 @@ public class ChatDoctorActivity extends AppCompatActivity implements View.OnClic
                     chatMessageList.add(chatMessage);
                     initChatMsgListView();
                     et_content.setText("");
-                } else {
+                } else if(client==null){
                     Util.showToast(mContext, "连接已断开，请稍等或重启App哟");
+                }else if(!client.isOpen()){
+                    Util.showToast(mContext, "连接已断开，请稍等或重启App哟1");
                 }
                 break;
             default:
