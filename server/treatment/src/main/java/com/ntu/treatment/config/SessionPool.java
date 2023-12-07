@@ -41,23 +41,23 @@ public class SessionPool {
         String msg = jsonObject.getString("content");
         String checked_kinds = jsonObject.getString("checked_kinds");
         String username = jsonObject.getString("username");
-        if (checked_kinds.equals("医生")){
-            UserServiceImpl userService = (UserServiceImpl) SpringUtil.getBean(UserServiceImpl.class);
-            String toUserIds = userService.findChatPatient(username);
-
-            Session session = sessions.get(toUserIds);
-            if (session != null){
-                session.getAsyncRemote().sendText(msg);
-            }else{
-                PatientHistory patientHistory=new PatientHistory(toUserIds,msg,"耳鼻喉科",username,"2023-12-07");
-                userService.historyInsert(patientHistory);
-            }
-        }else {
-            String toUserId = jsonObject.getString("toUserName");
-            Session session = sessions.get(toUserId);
-            if (session != null){
-                session.getAsyncRemote().sendText(msg);
-            }
-        }
+//        if (checked_kinds.equals("医生")){
+//            UserServiceImpl userService = (UserServiceImpl) SpringUtil.getBean(UserServiceImpl.class);
+//            String toUserIds = userService.findChatPatient(username);
+//
+//            Session session = sessions.get(toUserIds);
+//            if (session != null){
+//                session.getAsyncRemote().sendText(msg);
+//            }else{
+//                PatientHistory patientHistory=new PatientHistory(toUserIds,msg,"耳鼻喉科",username,"2023-12-07");
+//                userService.historyInsert(patientHistory);
+//            }
+//        }else {
+//            String toUserId = jsonObject.getString("toUserName");
+//            Session session = sessions.get(toUserId);
+//            if (session != null){
+//                session.getAsyncRemote().sendText(msg);
+//            }
+//        }
     }
 }

@@ -5,7 +5,7 @@ spring:
 #    url: jdbc:mysql://172.24.220.94:3666/treatment?userSSL=false&serverTimezone=GMT%2B8
 #    username: user_android
 #    password: "android123456"
-    url: jdbc:mysql://127.0.0.1:3307/treatment?userSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://127.0.0.1:3307/upcchat?userSSL=false&serverTimezone=GMT%2B8
     username: root
     password: "**Gys20030414"
     # 使用druid数据源

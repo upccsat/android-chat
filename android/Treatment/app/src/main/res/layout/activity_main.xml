@@ -64,28 +64,7 @@
                 android:layout_height="0.5dp"
                 android:layout_width="match_parent"
                 android:background="@color/devide_line"/>
-            <RadioGroup
-                android:id="@+id/login_radio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <RadioButton
-                    android:id="@+id/radio_login_doctor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="医生"
-                    android:textSize="16sp"
-                    android:textColor="#c50f57"
-                    />
-                <RadioButton
-                    android:id="@+id/radio_login_patient"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="患者"
-                    android:textSize="16sp"
-                    android:textColor="#c50f57"
-                    />
-            </RadioGroup>
+
         </LinearLayout>
 
         <Button

@@ -45,77 +45,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText mAccount;
     private EditText mPassword;
     private HashMap<String, String> stringHashMap;
-    private RadioGroup radioGroup_login;
-    private RadioButton radio_login_doctor;
-    private RadioButton radio_login_patient;
-    private String checked_kinds;
 
     String TAG = MainActivity.class.getCanonicalName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//            NotificationChannel channel = new NotificationChannel(
-//                    "your_channel_id",
-//                    "Your Channel Name",
-//                    NotificationManager.IMPORTANCE_DEFAULT
-//            );
-//            NotificationManager manager = getSystemService(NotificationManager.class);
-//            manager.createNotificationChannel(channel);
-//        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        createNotificationChannel();
         mContext = this;
         rl_user = (RelativeLayout) findViewById(R.id.rl_user);
         mLoginButton = (Button) findViewById(R.id.login);
         mRegisterButton = (Button) findViewById(R.id.register);
         mAccount = findViewById(R.id.account);
         mPassword = (EditText) findViewById(R.id.password);
-        radioGroup_login = findViewById(R.id.login_radio);
-        radio_login_doctor = findViewById(R.id.radio_login_doctor);
-        radio_login_patient = findViewById(R.id.radio_login_patient);
 
         stringHashMap = new HashMap<>();
         mLoginButton.setOnClickListener(this);
         mRegisterButton.setOnClickListener(this);
-        radioGroup_login.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (radio_login_doctor.getId() == checkedId){
-                    checked_kinds = radio_login_doctor.getText().toString();
-                }else {
-                    checked_kinds = radio_login_patient.getText().toString();
-                }
-            }
-        });
     }
 
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    "your_channel_id",
-                    "Your Channel Name",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
-    }
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.login: {
-                if (checked_kinds.equals("医生")){
-                    String url = GetUrl.url + "/user/doctorLogin";
-                    Doctor_Android_Async_Http_Post(url);
-                    break;
-                }else if (checked_kinds.equals("患者")){
-                    String url = GetUrl.url + "/user/patientLogin";
-                    Android_Async_Http_Post(url);
-                    break;
-                }
+                System.out.println("这是登录666");
+                String url = GetUrl.url + "/user/login";
+                Doctor_Android_Async_Http_Post(url);
             }
             case R.id.register: {
                 Intent intent = new Intent(MainActivity.this,RegisterActivity.class);
@@ -159,23 +115,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 System.out.println(response);
                 if (response.equals("true")){
                     System.out.println("哈哈哈哈哈哈哈");
-                    Notification notification = new NotificationCompat.Builder(MainActivity.this, "your_channel_id")
-                            .setContentTitle("Your Notification Title")
-                            .setContentText("Your Notification Text")
-                            .build();
-
-                    // 启动前台服务
-                    /*startForeground(YOUR_NOTIFICATION_ID, notification);*/
                     /**
                      * 传到ChatActivity
                      */
                     Bundle bundle = new Bundle();
                     bundle.putString("username",mAccount.getText().toString());
-                    bundle.putString("checked_kinds",checked_kinds);
+
                     Intent intent = new Intent();
                     intent.putExtra("doctor_bundle_chat",bundle);
-
-                    intent.setClass(MainActivity.this,ChatDoctorActivity.class);
+                    intent.setClass(MainActivity.this,EnterActivity.class);
                     startActivity(intent);
                 }else {
                     Toast.makeText(MainActivity.this, "账号或密码错误！", Toast.LENGTH_SHORT).show();
@@ -184,52 +132,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    //Post请求
-    private void Android_Async_Http_Post(String url){
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-        params.put("username", mAccount.getText().toString());
-        params.put("password", mPassword.getText().toString());
-        client.post(url, params, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                showResponse(new String(responseBody));
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(MainActivity.this, "Post请求失败！", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void showResponse(final String response){
-        //Activity不允许在子线程中进行UI操作
-        //通过该方法可以将线程切换到主线程，然后再更新UI元素
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                /*tv.setText(response);*/
-                System.out.println(response);
-                if (response.equals("true")){
-                    System.out.println("哈哈哈哈哈哈哈");
-                    /***
-                     * 发送到FirstPageActivity
-                     */
-                    Bundle bundle = new Bundle();
-                    bundle.putString("username",mAccount.getText().toString());
-                    bundle.putString("checked_kinds", checked_kinds);
-                    bundle.putString("flag","0");
-                    Intent intent = new Intent();
-                    intent.setClass(MainActivity.this,FirstPageActivity.class);
-                    intent.putExtra("bundles",bundle);
-
-                    startActivity(intent);
-                }else {
-                    Toast.makeText(MainActivity.this, "账号或密码错误！", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
 }

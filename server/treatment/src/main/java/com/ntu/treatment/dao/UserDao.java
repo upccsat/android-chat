@@ -3,6 +3,7 @@ package com.ntu.treatment.dao;
 import com.ntu.treatment.pojo.Doctor;
 import com.ntu.treatment.pojo.Patient;
 import com.ntu.treatment.pojo.PatientHistory;
+import com.ntu.treatment.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -18,32 +19,11 @@ import java.util.List;
 @Repository
 public interface UserDao {
 
-    Doctor findByDoctorName(String username);
+    User findByName(String username);
 
-    Patient findByPatientName(String username);
 
-    Integer registerDoctor(Doctor doctor);
 
-    Integer registerPatient(Patient patient);
-    Integer historyInsert(PatientHistory patientHistory);
+    Integer register(User user);
 
-    Integer updatePatientCondition(Patient patient);
 
-    Integer addPatientCondition(Patient patient);
-
-    List<Doctor> getToUserName(String category);
-
-    Doctor findChatPatient(String username);
-
-    Patient findAllPatient(String username);
-
-    int deletePatient(String username);
-
-    Integer updatePatientInfo(Patient patient);
-
-    List<PatientHistory> findAllPatientHistory(String username);
-
-    Integer updateDoctorToPatient(@Param("username") String username, @Param("myDoctor")String myDoctor);
-
-    PatientHistory findOnePatientHistory(@Param("username")String username,@Param("submitTime")String submitTime);
 }

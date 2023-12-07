@@ -18,6 +18,7 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import com.ntu.treatment.ChatActivity;
 import com.ntu.treatment.R;
 import com.ntu.treatment.util.Util;
 

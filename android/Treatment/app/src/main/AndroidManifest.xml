@@ -26,7 +26,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".EnterActivity"
+            android:exported="false" />
+        <activity android:name=".PatientHistoryActivity" />
+        <activity android:name=".EditPatientInfoActivity" />
         <activity android:name=".ChatDoctorActivity" />
+        <activity android:name=".ChatActivity" />
 
         <service
             android:name=".im.JWebSocketClientService"
@@ -38,6 +44,9 @@
             android:exported="false"
             android:process=":gray" />
 
+        <activity android:name=".FirstPageActivity" />
+        <activity android:name=".RegisterDoctorActivity" />
+        <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

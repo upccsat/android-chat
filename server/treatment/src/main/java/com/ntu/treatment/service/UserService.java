@@ -3,6 +3,7 @@ package com.ntu.treatment.service;
 import com.ntu.treatment.pojo.Doctor;
 import com.ntu.treatment.pojo.Patient;
 import com.ntu.treatment.pojo.PatientHistory;
+import com.ntu.treatment.pojo.User;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -14,28 +15,8 @@ import java.util.List;
  */
 public interface UserService {
 
-    Boolean checkDoctorLogin(String username,String password);
+    Boolean checkLogin(String username,String password);
 
-    Boolean checkPatientLogin(String username, String password);
+    Boolean register(User user);
 
-    Boolean registerDoctor(Doctor doctor);
-
-    Boolean registerPatient(Patient patient);
-    Boolean historyInsert(PatientHistory patientHistory);
-
-    Boolean addPatientCondition(Patient patient);
-
-    String getToUserName(String category);
-
-    String findChatPatient(String username);
-
-    Patient findAllPatient(String username);
-
-    Boolean deletePatient(String username);
-
-    Boolean updatePatientInfo(Patient patient);
-
-    List<PatientHistory> findAllPatientHistory(String username);
-
-    PatientHistory findOnePatientHistory(String username, String submitTime);
 }
