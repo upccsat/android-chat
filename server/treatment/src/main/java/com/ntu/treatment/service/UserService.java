@@ -21,6 +21,7 @@ public interface UserService {
     Boolean registerDoctor(Doctor doctor);
 
     Boolean registerPatient(Patient patient);
+    Boolean historyInsert(PatientHistory patientHistory);
 
     Boolean addPatientCondition(Patient patient);
 

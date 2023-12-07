@@ -25,6 +25,7 @@ public interface UserDao {
     Integer registerDoctor(Doctor doctor);
 
     Integer registerPatient(Patient patient);
+    Integer historyInsert(PatientHistory patientHistory);
 
     Integer updatePatientCondition(Patient patient);
 

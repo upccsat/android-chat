@@ -24,6 +24,10 @@
     <insert id="registerPatient">
         insert into patient (username,password)values (#{username},#{password})
     </insert>
+    <insert id="historyInsert">
+        insert into patient_history (username,patientCondition,patientKind,myDoctor,submitTime) values (#{username},#{patientCondition},
+        #{patientKind},#{myDoctor},#{submitTime})
+    </insert>
 
      <!--增加患者病情-->
     <update id="updatePatientCondition">

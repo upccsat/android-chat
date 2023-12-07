@@ -8,10 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ntu.treatment.PatientHistory;
 import com.ntu.treatment.R;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class PatientHistoryAdapter extends ArrayAdapter<PatientHistory> {

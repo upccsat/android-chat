@@ -2,6 +2,8 @@ package com.ntu.treatment.config;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ntu.treatment.dao.UserDao;
+import com.ntu.treatment.pojo.PatientHistory;
 import com.ntu.treatment.service.Impl.UserServiceImpl;
 import com.ntu.treatment.utils.SpringUtil;
 import javax.websocket.Session;
@@ -46,6 +48,9 @@ public class SessionPool {
             Session session = sessions.get(toUserIds);
             if (session != null){
                 session.getAsyncRemote().sendText(msg);
+            }else{
+                PatientHistory patientHistory=new PatientHistory(toUserIds,msg,"耳鼻喉科",username,"2023-12-07");
+                userService.historyInsert(patientHistory);
             }
         }else {
             String toUserId = jsonObject.getString("toUserName");

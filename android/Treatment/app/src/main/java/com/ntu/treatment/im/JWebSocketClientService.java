@@ -3,7 +3,6 @@ package com.ntu.treatment.im;
 import android.annotation.SuppressLint;
 import android.app.KeyguardManager;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -19,7 +18,6 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.ntu.treatment.ChatActivity;
 import com.ntu.treatment.R;
 import com.ntu.treatment.util.Util;
 

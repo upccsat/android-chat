@@ -64,7 +64,14 @@ public class UserServiceImpl implements UserService {
             return false;
         }
     }
-
+    public Boolean historyInsert(PatientHistory patientHistory){
+        int flag=userDao.historyInsert(patientHistory);
+        if(flag==1){
+            return true;
+        }else{
+            return false;
+        }
+    }
     public Boolean addPatientCondition(Patient patient){
         int flag = userDao.addPatientCondition(patient);
         int flag2 = userDao.updatePatientCondition(patient);
