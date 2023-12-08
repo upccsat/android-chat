@@ -1,9 +1,6 @@
 package com.ntu.treatment.dao;
 
-import com.ntu.treatment.pojo.Doctor;
-import com.ntu.treatment.pojo.Patient;
-import com.ntu.treatment.pojo.PatientHistory;
-import com.ntu.treatment.pojo.User;
+import com.ntu.treatment.pojo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -25,5 +22,18 @@ public interface UserDao {
 
     Integer register(User user);
 
+    //群聊模块
+    List<Group> getAllGroups(String username);
+
+    Integer createGroup(Group group);
+
+    Integer getGroupId(String groupName,String createTime);
+    //一对一模块
+    List<String> getAllFriendsFrom1(String username);
+    List<String> getAllFriendsFrom2(String username);
+    String findImageByUserName(String username);
+    List<HistroySingle> getHistorySingle(String userNameNow,String userNameToShow);
+    Integer addHistorySingle(HistroySingle histroySingle);
+    Integer addFriend(String userNameNow,String userNameToAdd);
 
 }

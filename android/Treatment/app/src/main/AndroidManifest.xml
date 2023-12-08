@@ -27,6 +27,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".FriendSelectActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GroupSelectActivity"
+            android:exported="false" />
+        <activity
             android:name=".EnterActivity"
             android:exported="false" />
         <activity android:name=".PatientHistoryActivity" />

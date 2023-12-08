@@ -2,8 +2,7 @@ package com.ntu.treatment.config;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.ntu.treatment.dao.UserDao;
-import com.ntu.treatment.pojo.PatientHistory;
+import com.ntu.treatment.pojo.HistroySingle;
 import com.ntu.treatment.service.Impl.UserServiceImpl;
 import com.ntu.treatment.utils.SpringUtil;
 import javax.websocket.Session;
@@ -38,26 +37,19 @@ public class SessionPool {
     public static void sendMessage(String message) {
         JSONObject jsonObject = JSON.parseObject(message);
 
-        String msg = jsonObject.getString("content");
-        String checked_kinds = jsonObject.getString("checked_kinds");
-        String username = jsonObject.getString("username");
-//        if (checked_kinds.equals("医生")){
-//            UserServiceImpl userService = (UserServiceImpl) SpringUtil.getBean(UserServiceImpl.class);
-//            String toUserIds = userService.findChatPatient(username);
-//
-//            Session session = sessions.get(toUserIds);
-//            if (session != null){
-//                session.getAsyncRemote().sendText(msg);
-//            }else{
-//                PatientHistory patientHistory=new PatientHistory(toUserIds,msg,"耳鼻喉科",username,"2023-12-07");
-//                userService.historyInsert(patientHistory);
-//            }
-//        }else {
-//            String toUserId = jsonObject.getString("toUserName");
-//            Session session = sessions.get(toUserId);
-//            if (session != null){
-//                session.getAsyncRemote().sendText(msg);
-//            }
-//        }
+        String fromUserName = jsonObject.getString("fromUserName");
+        String toUserName=jsonObject.getString("toUserName");
+        String content = jsonObject.getString("content");
+        String sendTime = jsonObject.getString("sendTime");
+        HistroySingle histroySingle=new HistroySingle(fromUserName,toUserName,content,sendTime);
+
+        UserServiceImpl userService = (UserServiceImpl) SpringUtil.getBean(UserServiceImpl.class);
+        Session session = sessions.get(toUserName);
+        if (session != null){
+            session.getAsyncRemote().sendText(content);
+            userService.addHistorySingle(histroySingle);
+        }else{
+            userService.addHistorySingle(histroySingle);
+        }
     }
 }

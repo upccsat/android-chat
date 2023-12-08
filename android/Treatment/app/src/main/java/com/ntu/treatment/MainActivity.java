@@ -118,11 +118,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     /**
                      * 传到ChatActivity
                      */
-                    Bundle bundle = new Bundle();
-                    bundle.putString("username",mAccount.getText().toString());
-
                     Intent intent = new Intent();
-                    intent.putExtra("doctor_bundle_chat",bundle);
+                    intent.putExtra("username",mAccount.getText().toString());
                     intent.setClass(MainActivity.this,EnterActivity.class);
                     startActivity(intent);
                 }else {

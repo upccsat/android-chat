@@ -10,9 +10,40 @@
         select * from users where username = #{username}
     </select>
 
-    <!-- 医生注册 -->
     <insert id="register">
         insert into users (username,password)values (#{username},#{password})
+    </insert>
+
+    <select id="getAllGroups" resultType="Group" parameterType="String">
+        select * from groupmembers where username=#{username}
+    </select>
+
+    <insert id="createGroup">
+        insert into groups(groupName,owner,createTime) values (#{groupName},#{owner},#{createTime})
+    </insert>
+    <select id="getGroupId" resultType="Integer">
+        select id from groups where groupName=#{groupName} and createTime=#{createTime}
+    </select>
+
+    <select id="getAllFriendsFrom1" resultType="String" parameterType="String">
+        select username1 from friends where username2=#{username}
+    </select>
+    <select id="getAllFriendsFrom2" resultType="String" parameterType="String">
+        select username2 from friends where username1=#{username}
+    </select>
+    <select id="findImageByUserName" resultType="String" parameterType="String">
+        select image from users where username=#{username}
+    </select>
+    <select id="getHistorySingle" resultType="HistorySingle" parameterType="String">
+        select * from historySingle where fromUserName=#{userNameNow} and toUserName=#{userNameToShow}
+        union
+        select * from history Single where fromUserName=#{userNameToShow} and toUserName=#{userNameToShow}
+    </select>
+    <insert id="addHistorySingle" >
+        insert into historysingle(fromUserName,toUserName,content,sendTime) values (#{fromUserName},#{toUserName},#{content},#{sendTime})
+    </insert>
+    <insert id="addFriend">
+        insert into friends(username1,username2) values(#{userNameNow},#{userNameToAdd})
     </insert>
 
 </mapper>

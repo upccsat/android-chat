@@ -1,9 +1,7 @@
 package com.ntu.treatment.service;
 
-import com.ntu.treatment.pojo.Doctor;
-import com.ntu.treatment.pojo.Patient;
-import com.ntu.treatment.pojo.PatientHistory;
-import com.ntu.treatment.pojo.User;
+import com.alibaba.fastjson.JSONObject;
+import com.ntu.treatment.pojo.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -19,4 +17,18 @@ public interface UserService {
 
     Boolean register(User user);
 
+    //群聊模块
+
+    List<Group> getAllGroups(String username);
+
+    Boolean createGroup(Group group);
+
+    //一对一模块
+    List<Friend> getAllFriends(String userName);
+
+    List<HistroySingle> getHistorySingle(String userNameNow,String userNameToShow);
+
+    Boolean addHistorySingle(HistroySingle histroySingle);
+
+    Boolean addFriend(String userNameNow,String userNameToAdd);
 }
