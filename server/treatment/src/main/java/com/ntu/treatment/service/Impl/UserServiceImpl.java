@@ -94,6 +94,26 @@ public class UserServiceImpl implements UserService {
         Boolean flag=(userDao.createGroup(group)!=null&&userDao.createGroup(group)==1?true:false);
         return flag;
     }
+    public Boolean addGroupMember(String username,String currentGroupId){
+        Integer flag=userDao.addGroupMember(username,currentGroupId);
+        if(flag==1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public  List<String> getUserNameFromGroup(Integer groupId){
+        List<String> result=userDao.getUserNameFromGroup(groupId);
+        return result;
+    }
+    public List<HistoryGroup> getHistoryGroup(String userNameNow,Integer groupId){
+        List<HistoryGroup> result=userDao.getHistoryGroup(userNameNow,groupId);
+        return result;
+    }
+    public Boolean addHistoryGroup(HistoryGroup historyGroup){
+        Boolean flag=(userDao.addHistoryGroup(historyGroup)==1?true:false);
+        return flag;
+    }
 
 
 }

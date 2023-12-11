@@ -21,9 +21,25 @@
     <insert id="createGroup">
         insert into groups(groupName,owner,createTime) values (#{groupName},#{owner},#{createTime})
     </insert>
+    <insert id="addGroupMember">
+        insert into groupmembers(groupid,username) where groupid=#{currentGroupId} and username=#{username}
+    </insert>
     <select id="getGroupId" resultType="Integer">
         select id from groups where groupName=#{groupName} and createTime=#{createTime}
     </select>
+    <select id="getUserNameFromGroup" resultType="String" parameterType="Integer">
+        select username from groupmembers where groupid=#{groupId}
+    </select>
+    <select id="getHistoryGroup" resultType="HistoryGroup">
+        select * from historygroup where groupid=#{groupIdToShow} and fromusername=#{userNameNow}
+    </select>
+    <insert id="addHistoryGroup">
+        insert into historygroup(groupid,fromusername,content,sendtime) values (#{groupId,#{fromUserName},#{content},#{sendTime}})
+    </insert>
+
+
+
+
 
     <select id="getAllFriendsFrom1" resultType="String" parameterType="String">
         select username1 from friends where username2=#{username}

@@ -2,11 +2,14 @@ package com.ntu.treatment.config;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ntu.treatment.pojo.HistoryGroup;
 import com.ntu.treatment.pojo.HistroySingle;
 import com.ntu.treatment.service.Impl.UserServiceImpl;
 import com.ntu.treatment.utils.SpringUtil;
 import javax.websocket.Session;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,15 +44,30 @@ public class SessionPool {
         String toUserName=jsonObject.getString("toUserName");
         String content = jsonObject.getString("content");
         String sendTime = jsonObject.getString("sendTime");
-        HistroySingle histroySingle=new HistroySingle(fromUserName,toUserName,content,sendTime);
+        Integer groupId=Integer.parseInt(jsonObject.getString("groupId"));
 
         UserServiceImpl userService = (UserServiceImpl) SpringUtil.getBean(UserServiceImpl.class);
-        Session session = sessions.get(toUserName);
-        if (session != null){
-            session.getAsyncRemote().sendText(content);
-            userService.addHistorySingle(histroySingle);
-        }else{
-            userService.addHistorySingle(histroySingle);
+        if(groupId==0&&toUserName!="none"){
+            HistroySingle histroySingle=new HistroySingle(fromUserName,toUserName,content,sendTime);
+            Session session = sessions.get(toUserName);
+            if (session != null){
+                session.getAsyncRemote().sendText(content);
+                userService.addHistorySingle(histroySingle);
+            }else{
+                userService.addHistorySingle(histroySingle);
+            }
+        }else if(groupId!=0&&toUserName=="none"){
+            HistoryGroup historyGroup=new HistoryGroup(groupId,fromUserName,content,sendTime);
+            List<String> usernames=userService.getUserNameFromGroup(groupId);
+            for(String username:usernames){
+                Session session=sessions.get(username);
+                if(session!=null){
+                    session.getAsyncRemote().sendText(content);
+                    userService.addHistoryGroup(historyGroup);
+                }else{
+                    userService.addHistoryGroup(historyGroup);
+                }
+            }
         }
     }
 }

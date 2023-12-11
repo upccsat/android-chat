@@ -51,7 +51,7 @@ public class UserController {
             return "false";
         }
     }
-    @RequestMapping("/getGroupsInfo")
+    @RequestMapping("/getGroups")
     public JSONObject findAllGroups(String username){
         List<Group> list = userService.getAllGroups(username);
         JSONObject jsonObject = new JSONObject();
@@ -75,7 +75,16 @@ public class UserController {
             return "false";
         }
     }
-    @RequestMapping("/getFriendsInfo")
+    @RequestMapping("/addGroupMember")
+    public String addGroupMember(String username,String groupId){
+        Boolean flag=userService.addGroupMember(username,groupId);
+        if(flag){
+            return "true";
+        }else{
+            return "false";
+        }
+    }
+    @RequestMapping("/getFriends")
     public JSONObject findAllFriends(String username){
         List<Friend> list = userService.getAllFriends(username);//返回friends的名字和头像的地址
         JSONObject jsonObject = new JSONObject();

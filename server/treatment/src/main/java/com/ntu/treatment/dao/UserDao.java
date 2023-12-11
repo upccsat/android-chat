@@ -24,10 +24,12 @@ public interface UserDao {
 
     //群聊模块
     List<Group> getAllGroups(String username);
-
     Integer createGroup(Group group);
-
+    Integer addGroupMember(String username,String currentGroupId);
     Integer getGroupId(String groupName,String createTime);
+    List<String> getUserNameFromGroup(Integer groupId);
+    List<HistoryGroup> getHistoryGroup(String userNameNow,Integer groupIdToShow);
+    Integer addHistoryGroup(HistoryGroup historyGroup);
     //一对一模块
     List<String> getAllFriendsFrom1(String username);
     List<String> getAllFriendsFrom2(String username);
