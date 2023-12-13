@@ -25,7 +25,7 @@
         insert into groupmembers(groupid,username) where groupid=#{currentGroupId} and username=#{username}
     </insert>
     <select id="getGroupId" resultType="Integer">
-        select id from groups where groupName=#{groupName} and createTime=#{createTime}
+        select id from groups where groupName=#{groupName} and owner=#{owner}
     </select>
     <select id="getUserNameFromGroup" resultType="String" parameterType="Integer">
         select username from groupmembers where groupid=#{groupId}
@@ -34,7 +34,7 @@
         select * from historygroup where groupid=#{groupIdToShow} and fromusername=#{userNameNow}
     </select>
     <insert id="addHistoryGroup">
-        insert into historygroup(groupid,fromusername,content,sendtime) values (#{groupId,#{fromUserName},#{content},#{sendTime}})
+        insert into historygroup(groupid,fromusername,content,sendtime) values (#{groupId},#{fromUserName},#{content},#{sendTime}})
     </insert>
 
 
@@ -61,5 +61,15 @@
     <insert id="addFriend">
         insert into friends(username1,username2) values(#{userNameNow},#{userNameToAdd})
     </insert>
-
+    <insert id="addFriendInvitation">
+        insert into friendinvitation(fromUserName,toUserName,isReceived) values (#{fromUserName},#{toUserName},#{isReceived})
+    </insert>
+    <update id="changeFriendInvitationStatus" parameterType="String">
+        update friendinvitation
+        set isReceived=0 where
+        fromUserName=#{fromUserName} and toUserName=#{toUserName}
+    </update>
+    <select id="getAllFriendInvitation" resultType="FriendInvitation" parameterType="String">
+        select * from friendinvitation where toUserName=#{userName}
+    </select>
 </mapper>

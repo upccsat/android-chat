@@ -1,11 +1,9 @@
 package com.ntu.treatment.service.Impl;
 
 
-import com.alibaba.fastjson.JSONObject;
 import com.ntu.treatment.dao.UserDao;
 import com.ntu.treatment.pojo.*;
 import com.ntu.treatment.service.UserService;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +23,6 @@ public class UserServiceImpl implements UserService {
 
     public Boolean checkLogin(String username,String password){
         User user = userDao.findByName(username);
-        System.out.println(username+"***service**"+password);
-        System.out.println("返回的"+user.getPassword());
         if (user.getPassword().equals(password)){
             System.out.println("登陆成功");
             return true;
@@ -61,12 +57,12 @@ public class UserServiceImpl implements UserService {
         return result;
     }
     @Override
-    public List<HistroySingle> getHistorySingle(String userNameNow,String userNameToShow){
+    public List<HistorySingle> getHistorySingle(String userNameNow, String userNameToShow){
         return userDao.getHistorySingle(userNameNow,userNameToShow);
     }
     @Override
-    public Boolean addHistorySingle(HistroySingle histroySingle){
-        Integer flag=userDao.addHistorySingle(histroySingle);
+    public Boolean addHistorySingle(HistorySingle historySingle){
+        Integer flag=userDao.addHistorySingle(historySingle);
         if(flag==1){
             return true;
         }else{
@@ -82,6 +78,26 @@ public class UserServiceImpl implements UserService {
             return false;
         }
     }
+    public Boolean addFriendInvitation(FriendInvitation friendInvitation){
+        Integer flag=userDao.addFriendInvitation(friendInvitation);
+        if(flag==1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public Boolean changeFriendInvitationStatus(String fromUserName,String toUserName){
+        Integer flag=userDao.changeFriendInvitationStatus(fromUserName,toUserName);
+        if(flag>0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public List<FriendInvitation> getAllFriendInvitation(String userName){
+        List<FriendInvitation> result=userDao.getAllFriendInvitation(userName);
+        return result;
+    }
 
     //群聊模块
     @Override
@@ -93,6 +109,10 @@ public class UserServiceImpl implements UserService {
     public Boolean createGroup(Group group){
         Boolean flag=(userDao.createGroup(group)!=null&&userDao.createGroup(group)==1?true:false);
         return flag;
+    }
+    public Integer getGroupId(String groupName,String owner){
+        Integer result=userDao.getGroupId(groupName,owner);
+        return result;
     }
     public Boolean addGroupMember(String username,String currentGroupId){
         Integer flag=userDao.addGroupMember(username,currentGroupId);

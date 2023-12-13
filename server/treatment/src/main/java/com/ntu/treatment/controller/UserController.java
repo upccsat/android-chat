@@ -3,20 +3,14 @@ package com.ntu.treatment.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.ntu.treatment.pojo.*;
 import com.ntu.treatment.service.UserService;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -84,8 +78,13 @@ public class UserController {
             return "false";
         }
     }
+    @RequestMapping("/getGroupId")
+    public Integer getGroupId(String groupName,String owner){
+        return userService.getGroupId(groupName,owner);
+    }
     @RequestMapping("/getFriends")
     public JSONObject findAllFriends(String username){
+        System.out.println("getFriends");
         List<Friend> list = userService.getAllFriends(username);//返回friends的名字和头像的地址
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(list));
@@ -95,7 +94,7 @@ public class UserController {
     }
     @RequestMapping("/getHistorySingle")
     public JSONObject findHistorySingle(String userNameNow,String userNameToShow){
-        List<HistroySingle> list=userService.getHistorySingle(userNameNow,userNameToShow);
+        List<HistorySingle> list=userService.getHistorySingle(userNameNow,userNameToShow);
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(list));
         jsonObject.put("history_single_list", jsonArray.toString());
@@ -103,12 +102,42 @@ public class UserController {
         return jsonObject;
     }
     @RequestMapping("/addFriend")
-    public String addFriend(String userNameNow,String userNameToAdd){
-        Boolean flag=userService.addFriend(userNameNow,userNameToAdd);
+    public String addFriend(String fromUserName,String toUserName){
+        System.out.println("addFriend");
+        Boolean flag=userService.addFriend(fromUserName,toUserName);
         if(flag){
             return "true";
         }else{
             return "false";
         }
+    }
+    @RequestMapping("/addFriendInvitation")
+    public String addFriendInvitation(String fromUserName,String toUserName){
+        System.out.println("addFriendInvitation");
+        FriendInvitation friendInvitation=new FriendInvitation(fromUserName,toUserName,0);
+        Boolean flag=userService.addFriendInvitation(friendInvitation);
+        if(flag){
+            return "true";
+        }else{
+            return "false";
+        }
+    }
+    @RequestMapping("/changeFriendInvitationStatus")
+    public String changeFriendInvitationStatus(String fromUserName,String toUserName){
+        Boolean flag=userService.changeFriendInvitationStatus(fromUserName,toUserName);
+        if(flag){
+            return "true";
+        }else{
+            return "false";
+        }
+    }
+    @RequestMapping("/getAllFriendInvitation")
+    public JSONObject getAllFriendInvitation(String userName){
+        List<FriendInvitation> list=userService.getAllFriendInvitation(userName);
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(list));
+        jsonObject.put("friend_invitation_list", jsonArray.toString());
+        System.out.println(jsonArray.toString());
+        return jsonObject;
     }
 }

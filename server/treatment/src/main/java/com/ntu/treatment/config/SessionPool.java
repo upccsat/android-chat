@@ -3,12 +3,11 @@ package com.ntu.treatment.config;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ntu.treatment.pojo.HistoryGroup;
-import com.ntu.treatment.pojo.HistroySingle;
+import com.ntu.treatment.pojo.HistorySingle;
 import com.ntu.treatment.service.Impl.UserServiceImpl;
 import com.ntu.treatment.utils.SpringUtil;
 import javax.websocket.Session;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,15 +45,22 @@ public class SessionPool {
         String sendTime = jsonObject.getString("sendTime");
         Integer groupId=Integer.parseInt(jsonObject.getString("groupId"));
 
+        JSONObject jsonObject1=new JSONObject();
+        jsonObject1.put("fromUserName",fromUserName);
+        jsonObject1.put("toUserName",toUserName);
+        jsonObject1.put("content",content);
+        jsonObject1.put("sendTime",sendTime);
+        jsonObject1.put("groupId",groupId.toString());
+
         UserServiceImpl userService = (UserServiceImpl) SpringUtil.getBean(UserServiceImpl.class);
         if(groupId==0&&toUserName!="none"){
-            HistroySingle histroySingle=new HistroySingle(fromUserName,toUserName,content,sendTime);
+            HistorySingle historySingle =new HistorySingle(fromUserName,toUserName,content,sendTime);
             Session session = sessions.get(toUserName);
             if (session != null){
-                session.getAsyncRemote().sendText(content);
-                userService.addHistorySingle(histroySingle);
+                session.getAsyncRemote().sendText(jsonObject1.toString());
+                userService.addHistorySingle(historySingle);
             }else{
-                userService.addHistorySingle(histroySingle);
+                userService.addHistorySingle(historySingle);
             }
         }else if(groupId!=0&&toUserName=="none"){
             HistoryGroup historyGroup=new HistoryGroup(groupId,fromUserName,content,sendTime);
@@ -62,7 +68,7 @@ public class SessionPool {
             for(String username:usernames){
                 Session session=sessions.get(username);
                 if(session!=null){
-                    session.getAsyncRemote().sendText(content);
+                    session.getAsyncRemote().sendText(jsonObject1.toString());
                     userService.addHistoryGroup(historyGroup);
                 }else{
                     userService.addHistoryGroup(historyGroup);

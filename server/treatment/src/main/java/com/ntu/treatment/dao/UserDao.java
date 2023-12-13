@@ -2,7 +2,6 @@ package com.ntu.treatment.dao;
 
 import com.ntu.treatment.pojo.*;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public interface UserDao {
     List<Group> getAllGroups(String username);
     Integer createGroup(Group group);
     Integer addGroupMember(String username,String currentGroupId);
-    Integer getGroupId(String groupName,String createTime);
+    Integer getGroupId(String groupName,String owner);
     List<String> getUserNameFromGroup(Integer groupId);
     List<HistoryGroup> getHistoryGroup(String userNameNow,Integer groupIdToShow);
     Integer addHistoryGroup(HistoryGroup historyGroup);
@@ -34,8 +33,11 @@ public interface UserDao {
     List<String> getAllFriendsFrom1(String username);
     List<String> getAllFriendsFrom2(String username);
     String findImageByUserName(String username);
-    List<HistroySingle> getHistorySingle(String userNameNow,String userNameToShow);
-    Integer addHistorySingle(HistroySingle histroySingle);
+    List<HistorySingle> getHistorySingle(String userNameNow, String userNameToShow);
+    Integer addHistorySingle(HistorySingle historySingle);
     Integer addFriend(String userNameNow,String userNameToAdd);
+    Integer addFriendInvitation(FriendInvitation friendInvitation);
+    Integer changeFriendInvitationStatus(String fromUserName,String toUserName);
+    List<FriendInvitation> getAllFriendInvitation(String userName);
 
 }

@@ -1,8 +1,6 @@
 package com.ntu.treatment.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.ntu.treatment.pojo.*;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,6 +22,8 @@ public interface UserService {
     Boolean createGroup(Group group);
     Boolean addGroupMember(String username,String currentGroupId);
 
+    Integer getGroupId(String groupName,String owner);
+
     List<String> getUserNameFromGroup(Integer groupId);
     List<HistoryGroup> getHistoryGroup(String userNameNow,Integer groupId);
     Boolean addHistoryGroup(HistoryGroup historyGroup);
@@ -31,9 +31,13 @@ public interface UserService {
     //一对一模块
     List<Friend> getAllFriends(String userName);
 
-    List<HistroySingle> getHistorySingle(String userNameNow,String userNameToShow);
+    List<HistorySingle> getHistorySingle(String userNameNow, String userNameToShow);
 
-    Boolean addHistorySingle(HistroySingle histroySingle);
+    Boolean addHistorySingle(HistorySingle historySingle);
 
     Boolean addFriend(String userNameNow,String userNameToAdd);
+
+    Boolean addFriendInvitation(FriendInvitation friendInvitation);
+    Boolean changeFriendInvitationStatus(String fromUserName,String toUserName);
+    List<FriendInvitation> getAllFriendInvitation(String userName);
 }

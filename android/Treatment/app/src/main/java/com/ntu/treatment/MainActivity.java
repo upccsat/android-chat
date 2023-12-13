@@ -6,12 +6,15 @@ import androidx.core.app.NotificationCompat;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.se.omapi.Session;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +35,11 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import com.loopj.android.http.*;
+import com.ntu.treatment.im.JWebSocketClient;
+import com.ntu.treatment.im.JWebSocketClientService;
 import com.ntu.treatment.util.GetUrl;
+import com.ntu.treatment.im.JWebSocketClientService;
+import com.ntu.treatment.util.Util;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -44,9 +51,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mRegisterButton;
     private EditText mAccount;
     private EditText mPassword;
-    private HashMap<String, String> stringHashMap;
+
 
     String TAG = MainActivity.class.getCanonicalName();
+
+    private JWebSocketClient client;
+    private JWebSocketClientService.JWebSocketClientBinder binder;
+
+    private JWebSocketClientService jWebSClientService;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            Log.e("MainActivity", "服务与活动成功绑定");
+            binder = (JWebSocketClientService.JWebSocketClientBinder) iBinder;
+            jWebSClientService = binder.getService();
+            client = jWebSClientService.client;
+            Log.e("MainActivity","onServiceConnected");
+            System.out.println(client==null?"yes":"no");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            Log.e("ChatActivity", "服务与活动成功断开");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +88,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAccount = findViewById(R.id.account);
         mPassword = (EditText) findViewById(R.id.password);
 
-        stringHashMap = new HashMap<>();
+
         mLoginButton.setOnClickListener(this);
         mRegisterButton.setOnClickListener(this);
+
+
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.login: {
-                System.out.println("这是登录666");
                 String url = GetUrl.url + "/user/login";
                 Doctor_Android_Async_Http_Post(url);
             }
@@ -89,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RequestParams params = new RequestParams();
         params.put("username", mAccount.getText().toString());
         params.put("password", mPassword.getText().toString());
+
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -114,12 +144,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 System.out.println(response);
                 if (response.equals("true")){
-                    System.out.println("哈哈哈哈哈哈哈");
+                    Util util=new Util();
+                    util.setUsernameNameText(mAccount.getText().toString());
+                    bindService();
+                    System.out.println(client==null?"yes":"no");
                     /**
                      * 传到ChatActivity
                      */
                     Intent intent = new Intent();
-                    intent.putExtra("username",mAccount.getText().toString());
+                    intent.putExtra("userName",mAccount.getText().toString());
                     intent.setClass(MainActivity.this,EnterActivity.class);
                     startActivity(intent);
                 }else {
@@ -127,6 +160,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+    }
+    private void bindService() {
+        Intent bindIntent = new Intent(mContext, JWebSocketClientService.class);
+        bindService(bindIntent, serviceConnection, BIND_AUTO_CREATE);
     }
 
 }

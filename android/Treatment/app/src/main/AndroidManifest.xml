@@ -27,6 +27,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ViewInvitationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddFriendActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatGroupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatFriendActivity"
+            android:exported="false" />
+        <activity
             android:name=".FriendSelectActivity"
             android:exported="false" />
         <activity

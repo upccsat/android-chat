@@ -11,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Group implements Serializable {
     private String groupName;
+    private String image;
     private String owner;
     private String createTime;
 }

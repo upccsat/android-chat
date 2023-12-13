@@ -32,7 +32,7 @@ public class WebSocketEndpoint {
         //把会话放入连接池
         this.session = session;
         SessionPool.sessions.put(userId, session);
-        System.out.println(111);
+        System.out.println(userId+"已连接到webSocket");
     }
 
     /**

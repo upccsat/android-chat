@@ -18,6 +18,7 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import com.alibaba.fastjson.JSON;
 import com.ntu.treatment.ChatActivity;
 import com.ntu.treatment.R;
 import com.ntu.treatment.util.Util;
@@ -29,7 +30,7 @@ import java.net.URI;
 
 
 public class JWebSocketClientService extends Service {
-    public JWebSocketClient client;
+    public static JWebSocketClient client;
     private JWebSocketClientBinder mBinder = new JWebSocketClientBinder();
     private final static int GRAY_SERVICE_ID = 1001;
     private String username;
@@ -102,37 +103,9 @@ public class JWebSocketClientService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        //初始化websocket
-        initSocketClient();
-//        mHandler.postDelayed(heartBeatRunnable, HEART_BEAT_RATE);//开启心跳检测
-
-        //设置service为前台服务，提高优先级
-        if (Build.VERSION.SDK_INT < 18) {
-            //Android4.3以下 ，隐藏Notification上的图标
-            startForeground(GRAY_SERVICE_ID, new Notification());
-        } else if(Build.VERSION.SDK_INT>18 && Build.VERSION.SDK_INT<25){
-            //Android4.3 - Android7.0，隐藏Notification上的图标
-            Intent innerIntent = new Intent(this, GrayInnerService.class);
-            startService(innerIntent);
-            startForeground(GRAY_SERVICE_ID, new Notification());
-        }else{
-            //Android7.0以上app启动后通知栏会出现一条"正在运行"的通知
-            startForeground(GRAY_SERVICE_ID, new Notification());
-        }
-
-        acquireWakeLock();
-        return START_STICKY;
-    }
-
-
-    @Override
     public void onDestroy() {
         closeConnect();
         super.onDestroy();
-    }
-
-    public JWebSocketClientService() {
     }
 
 
@@ -145,10 +118,18 @@ public class JWebSocketClientService extends Service {
             @Override
             public void onMessage(String message) {
                 Log.e("JWebSocketClientService", "收到的消息：" + message);
+                com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(message);
+
+                Integer groupId=Integer.parseInt(jsonObject.getString("groupId"));
 
                 Intent intent = new Intent();
-                intent.setAction("com.xch.servicecallback.content");
-                intent.putExtra("message", message);
+                if(groupId==0){
+                    intent.setAction("com.xch.servicecallback.content");
+                    intent.putExtra("message", message);
+                }else{
+                    intent.setAction("com.xch.servicecallback.content.group");
+                    intent.putExtra("message", message);
+                }
                 sendBroadcast(intent);
 
                 checkLockAndShowNotification(message);
@@ -157,10 +138,11 @@ public class JWebSocketClientService extends Service {
             @Override
             public void onOpen(ServerHandshake handshakedata) {
                 super.onOpen(handshakedata);
+                System.out.println(Util.ws+"已连接");
                 Log.e("JWebSocketClientService", "websocket连接成功");
             }
         };
-        connect();
+        client.connect();
     }
 
     /**

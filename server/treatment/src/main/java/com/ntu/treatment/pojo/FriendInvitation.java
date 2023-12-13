@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HistroySingle {
+public class FriendInvitation {
     private String fromUserName;
     private String toUserName;
-    private String content;
-    private String sendTime;
+    private Integer isReceived;
 }
