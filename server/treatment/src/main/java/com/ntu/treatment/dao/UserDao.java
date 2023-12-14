@@ -22,9 +22,10 @@ public interface UserDao {
     Integer register(User user);
 
     //群聊模块
-    List<Group> getAllGroups(String username);
+    List<Integer> getAllGroupsId(String username);
+    Group getGroup(Integer groupId);
     Integer createGroup(Group group);
-    Integer addGroupMember(String username,String currentGroupId);
+    Integer addGroupMember(String username,Integer currentGroupId);
     Integer getGroupId(String groupName,String owner);
     List<String> getUserNameFromGroup(Integer groupId);
     List<HistoryGroup> getHistoryGroup(String userNameNow,Integer groupIdToShow);

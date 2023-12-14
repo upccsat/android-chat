@@ -29,9 +29,6 @@ public class GroupsAdapter extends BaseAdapter {
         this.resource = resource;
         this.from = from;
         this.to = to;
-        for(int i=0;i<dataList.size();i++){
-            num.add(0);
-        }
     }
 
     @Override
@@ -63,18 +60,12 @@ public class GroupsAdapter extends BaseAdapter {
 
             Object value = dataItem.get(key);
 
-            // 在这里将数据显示在界面上，例如使用 findViewById 找到视图并设置数据
-            TextView textView = convertView.findViewById(viewId);
-            ImageView imageView=convertView.findViewById(viewId);
-            TextView textViewOwner=convertView.findViewById(viewId);
-            if (textView != null) {
+            if (convertView.findViewById(viewId) instanceof TextView) {
+                TextView textView = convertView.findViewById(viewId);
                 textView.setText(value != null ? value.toString() : "");
-            }
-            if(imageView!=null){
-                System.out.println("加载图片....");
-            }
-            if(textViewOwner!=null){
-                textViewOwner.setText(value != null ? value.toString() : "");
+            } else if (convertView.findViewById(viewId) instanceof ImageView) {
+                ImageView imageView = convertView.findViewById(viewId);
+                imageView.setImageResource(R.drawable.group);
             }
         }
 

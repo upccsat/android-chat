@@ -1,6 +1,8 @@
 package com.ntu.treatment.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,16 +32,21 @@ public class FriendInvitationAdapter extends BaseAdapter {
     private String[] from;
     private Integer[] to;
     private String userName;
+    private List<Integer> isReceiveds;
     private String url;
 
+
+    public static final String REFRESH_ACTION = "com.example.chatupc.REFRESH_ACTION";
+
     public FriendInvitationAdapter(Context context, List<? extends Map<String, ?>> data,
-                         int resource, String[] from, Integer[] to,String userName) {
+                         int resource, String[] from, Integer[] to,String userName,List<Integer> isReceiveds) {
         this.context = context;
         this.dataList = data;
         this.resource = resource;
         this.from = from;
         this.to = to;
         this.userName=userName;
+        this.isReceiveds=isReceiveds;
     }
 
     @Override
@@ -78,11 +85,14 @@ public class FriendInvitationAdapter extends BaseAdapter {
             }
         }
         Button btnAgree=convertView.findViewById(R.id.btnAgree);
+        if(isReceiveds.get(position)==1){
+            btnAgree.setVisibility(View.INVISIBLE);
+        }
         TextView textView=convertView.findViewById(R.id.textView);
         btnAgree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               url= GetUrl.url+"/changeFriendInvitationStatus";
+               url= GetUrl.url+"/user/changeFriendInvitationStatus";
                 AsyncHttpClient client = new AsyncHttpClient();
                 RequestParams params = new RequestParams();
                 params.put("fromUserName", textView.getText().toString());
@@ -90,7 +100,22 @@ public class FriendInvitationAdapter extends BaseAdapter {
                 client.post(url, params, new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                       //TODO 完成ui的更新以及friend数据库的更新
+                        System.out.println(new String(responseBody));
+                        String response=new String(responseBody);
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                System.out.println(new String(responseBody));
+                                String response = new String(responseBody);
+                                if ("true".equals(response)) {
+                                    btnAgree.setVisibility(View.INVISIBLE);
+                                    sendRefreshBroadcast(context);
+                                } else if ("false".equals(response)) {
+                                    Toast.makeText(context, "通过失败，请重试", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
                     }
 
                     @Override
@@ -101,6 +126,11 @@ public class FriendInvitationAdapter extends BaseAdapter {
             }
         });
         return convertView;
+    }
+
+    public static void sendRefreshBroadcast(Context context) {
+        Intent intent = new Intent(REFRESH_ACTION);
+        context.sendBroadcast(intent);
     }
 
 }

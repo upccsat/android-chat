@@ -6,11 +6,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.ntu.treatment.pojo.*;
 import com.ntu.treatment.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +50,8 @@ public class UserController {
     }
     @RequestMapping("/getGroups")
     public JSONObject findAllGroups(String username){
-        List<Group> list = userService.getAllGroups(username);
+        List<Integer> groupIds=userService.getAllGroupsId(username);
+        List<Group> list = userService.getGroups(groupIds);
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(list));
         jsonObject.put("groups_list", jsonArray.toString());
@@ -70,8 +74,15 @@ public class UserController {
         }
     }
     @RequestMapping("/addGroupMember")
-    public String addGroupMember(String username,String groupId){
-        Boolean flag=userService.addGroupMember(username,groupId);
+    public String addGroupMember(@RequestParam("usernames") ArrayList<String> usernames){//usernames的最后一位是groupId
+        System.out.println("123");
+        for(int i=0;i< usernames.size();i++){
+            usernames.set(i, usernames.get(i).replace("\"","").replace("[","").replace("]",""));
+            System.out.println("当前："+usernames.get(i));
+            System.out.println(usernames.get(i) instanceof String);
+        }
+        System.out.println(usernames);
+        Boolean flag=userService.addGroupMember(usernames);
         if(flag){
             return "true";
         }else{
@@ -80,17 +91,18 @@ public class UserController {
     }
     @RequestMapping("/getGroupId")
     public Integer getGroupId(String groupName,String owner){
+        System.out.println("111");
         return userService.getGroupId(groupName,owner);
     }
     @RequestMapping("/getFriends")
     public JSONObject findAllFriends(String username){
-        System.out.println("getFriends");
         List<Friend> list = userService.getAllFriends(username);//返回friends的名字和头像的地址
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(list));
         jsonObject.put("friends_list", jsonArray.toString());
-        System.out.println(jsonArray.toString());
+        System.out.println(jsonObject.toString());
         return jsonObject;
+
     }
     @RequestMapping("/getHistorySingle")
     public JSONObject findHistorySingle(String userNameNow,String userNameToShow){
@@ -124,9 +136,14 @@ public class UserController {
     }
     @RequestMapping("/changeFriendInvitationStatus")
     public String changeFriendInvitationStatus(String fromUserName,String toUserName){
+        System.out.println("changeFriendInvitationStatus");
         Boolean flag=userService.changeFriendInvitationStatus(fromUserName,toUserName);
         if(flag){
-            return "true";
+            Boolean flag1=userService.addFriend(fromUserName,toUserName);
+            if(flag1){
+                return "true";
+            }
+            return "false";
         }else{
             return "false";
         }
@@ -137,7 +154,7 @@ public class UserController {
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(list));
         jsonObject.put("friend_invitation_list", jsonArray.toString());
-        System.out.println(jsonArray.toString());
+        System.out.println(jsonObject.toString());
         return jsonObject;
     }
 }

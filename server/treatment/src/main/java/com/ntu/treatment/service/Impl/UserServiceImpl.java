@@ -7,6 +7,7 @@ import com.ntu.treatment.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,22 +102,35 @@ public class UserServiceImpl implements UserService {
 
     //群聊模块
     @Override
-    public List<Group> getAllGroups(String username){
-        return userDao.getAllGroups(username);
+    public List<Integer> getAllGroupsId(String username){
+        return userDao.getAllGroupsId(username);
     }
-
+    @Override
+    public List<Group> getGroups(List<Integer> groupIds){
+        List<Group> result=new ArrayList<>();
+        for(int i=0;i<groupIds.size();i++){
+            Group group=userDao.getGroup(groupIds.get(i));
+            result.add(group);
+        }
+        return result;
+    }
     @Override
     public Boolean createGroup(Group group){
-        Boolean flag=(userDao.createGroup(group)!=null&&userDao.createGroup(group)==1?true:false);
+        Boolean flag=(userDao.createGroup(group)==1?true:false);
         return flag;
     }
     public Integer getGroupId(String groupName,String owner){
         Integer result=userDao.getGroupId(groupName,owner);
         return result;
     }
-    public Boolean addGroupMember(String username,String currentGroupId){
-        Integer flag=userDao.addGroupMember(username,currentGroupId);
-        if(flag==1){
+    public Boolean addGroupMember(ArrayList<String> usernames){
+        Integer currentGroupId=Integer.parseInt(usernames.get(usernames.size()-1));
+        Integer sum=0;
+        for(int i=0;i<usernames.size()-1;i++){
+            Integer flag=userDao.addGroupMember(usernames.get(i),currentGroupId);
+            sum+=flag;
+        }
+        if(sum==usernames.size()-1){
             return true;
         }else{
             return false;

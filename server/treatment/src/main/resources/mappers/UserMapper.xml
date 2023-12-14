@@ -14,18 +14,21 @@
         insert into users (username,password)values (#{username},#{password})
     </insert>
 
-    <select id="getAllGroups" resultType="Group" parameterType="String">
-        select * from groupmembers where username=#{username}
+    <select id="getAllGroupsId" resultType="Integer" parameterType="String">
+        select groupId from groupmembers where username=#{username}
+    </select>
+    <select id="getGroup" resultType="Group" parameterType="Integer">
+        select * from `groups` where id=#{groupId}
     </select>
 
     <insert id="createGroup">
-        insert into groups(groupName,owner,createTime) values (#{groupName},#{owner},#{createTime})
+        insert into `groups` (groupName,owner,createTime) values (#{groupName},#{owner},#{createTime})
     </insert>
     <insert id="addGroupMember">
-        insert into groupmembers(groupid,username) where groupid=#{currentGroupId} and username=#{username}
+        insert into groupmembers (groupid,username) values (#{currentGroupId},#{username})
     </insert>
     <select id="getGroupId" resultType="Integer">
-        select id from groups where groupName=#{groupName} and owner=#{owner}
+        select id from `groups` where groupName=#{groupName} and owner=#{owner}
     </select>
     <select id="getUserNameFromGroup" resultType="String" parameterType="Integer">
         select username from groupmembers where groupid=#{groupId}
@@ -34,7 +37,7 @@
         select * from historygroup where groupid=#{groupIdToShow} and fromusername=#{userNameNow}
     </select>
     <insert id="addHistoryGroup">
-        insert into historygroup(groupid,fromusername,content,sendtime) values (#{groupId},#{fromUserName},#{content},#{sendTime}})
+        insert into historygroup (groupid,fromusername,content,sendtime) values (#{groupId},#{fromUserName},#{content},#{sendTime}})
     </insert>
 
 
@@ -66,7 +69,7 @@
     </insert>
     <update id="changeFriendInvitationStatus" parameterType="String">
         update friendinvitation
-        set isReceived=0 where
+        set isReceived=1 where
         fromUserName=#{fromUserName} and toUserName=#{toUserName}
     </update>
     <select id="getAllFriendInvitation" resultType="FriendInvitation" parameterType="String">

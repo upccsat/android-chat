@@ -2,6 +2,7 @@ package com.ntu.treatment.service;
 
 import com.ntu.treatment.pojo.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,11 +17,10 @@ public interface UserService {
     Boolean register(User user);
 
     //群聊模块
-
-    List<Group> getAllGroups(String username);
-
+    List<Integer> getAllGroupsId(String username);
+    List<Group> getGroups(List<Integer> groupIds);
     Boolean createGroup(Group group);
-    Boolean addGroupMember(String username,String currentGroupId);
+    Boolean addGroupMember(ArrayList<String> usernames);
 
     Integer getGroupId(String groupName,String owner);
 
