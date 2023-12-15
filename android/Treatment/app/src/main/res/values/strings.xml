@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Treatment</string>
+    <string name="app_name">upcchat</string>
     <string name="et_account_hint">账号</string>
     <string name="et_password_hint">密码</string>
     <string name="register">新用户</string>

@@ -3,6 +3,7 @@ package com.ntu.treatment.im;
 import android.annotation.SuppressLint;
 import android.app.KeyguardManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -17,9 +18,13 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.alibaba.fastjson.JSON;
 import com.ntu.treatment.ChatActivity;
+import com.ntu.treatment.ChatFriendActivity;
+import com.ntu.treatment.ChatGroupActivity;
+import com.ntu.treatment.MainActivity;
 import com.ntu.treatment.R;
 import com.ntu.treatment.util.Util;
 
@@ -34,6 +39,7 @@ public class JWebSocketClientService extends Service {
     private JWebSocketClientBinder mBinder = new JWebSocketClientBinder();
     private final static int GRAY_SERVICE_ID = 1001;
     private String username;
+
     //灰色保活
     public static class GrayInnerService extends Service {
 
@@ -71,11 +77,15 @@ public class JWebSocketClientService extends Service {
             return JWebSocketClientService.this;
         }
     }
+    public void setUsername(String username){
+        this.username=username;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public IBinder onBind(Intent intent) {
         initSocketClient();
+        username="";
 //        mHandler.postDelayed(heartBeatRunnable, HEART_BEAT_RATE);//开启心跳检测
 
         //设置service为前台服务，提高优先级
@@ -119,20 +129,28 @@ public class JWebSocketClientService extends Service {
             public void onMessage(String message) {
                 Log.e("JWebSocketClientService", "收到的消息：" + message);
                 com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(message);
-
+                String fromUserName= jsonObject.getString("fromUserName");
+                String toUserName=jsonObject.getString("toUserName");
+                String content=jsonObject.getString("content");
+                String groupName= jsonObject.getString("groupName");
                 Integer groupId=Integer.parseInt(jsonObject.getString("groupId"));
 
                 Intent intent = new Intent();
                 if(groupId==0){
                     intent.setAction("com.xch.servicecallback.content");
                     intent.putExtra("message", message);
+                    if(username.equals(fromUserName)){
+                        checkLockAndShowNotification("来自好友："+fromUserName,content,R.drawable.contact_head_icon,username,toUserName,"",0);
+                    }else if(username.equals(toUserName)){
+                        checkLockAndShowNotification("来自好友："+fromUserName,content,R.drawable.contact_head_icon,username,fromUserName,"",0);
+                    }
+
                 }else{
                     intent.setAction("com.xch.servicecallback.content.group");
                     intent.putExtra("message", message);
+                    checkLockAndShowNotification("来自群聊："+groupName,fromUserName+":"+content,R.drawable.group,username,"none",groupName,groupId);
                 }
                 sendBroadcast(intent);
-
-                checkLockAndShowNotification(message);
             }
 
             @Override
@@ -144,6 +162,8 @@ public class JWebSocketClientService extends Service {
         };
         client.connect();
     }
+
+
 
     /**
      * 连接websocket
@@ -198,7 +218,7 @@ public class JWebSocketClientService extends Service {
      *
      * @param content
      */
-    private void checkLockAndShowNotification(String content) {
+    private void checkLockAndShowNotification(String title,String content,int icon,String userName,String toUserName,String groupName,Integer groupId) {
         //管理锁屏的一个服务
         KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         if (km.inKeyguardRestrictedInputMode()) {//锁屏
@@ -210,9 +230,9 @@ public class JWebSocketClientService extends Service {
                 wl.acquire();  //点亮屏幕
                 wl.release();  //任务结束后释放
             }
-            sendNotification(content);
+            sendNotification(title,content,icon,userName,toUserName,groupName,groupId);
         } else {
-            sendNotification(content);
+            sendNotification(title,content,icon,userName,toUserName,groupName,groupId);
         }
     }
 
@@ -221,34 +241,65 @@ public class JWebSocketClientService extends Service {
      *
      * @param content
      */
-    private void sendNotification(String content) {
-        Intent intent = new Intent();
-        intent.setClass(this, ChatActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationManager notifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new NotificationCompat.Builder(this)
-                .setAutoCancel(true)
-                // 设置该通知优先级
-                .setPriority(Notification.PRIORITY_MAX)
-                .setSmallIcon(R.drawable.icon)
-                .setContentTitle("服务器")
+    private void sendNotification(String title,String content,int icon,String userName,String toUserName,String groupName,Integer groupId) {
+//        Intent intent = new Intent();
+//        intent.setClass(this, ChatActivity.class);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        NotificationManager notifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        Notification notification = new NotificationCompat.Builder(this)
+//                .setAutoCancel(true)
+//                // 设置该通知优先级
+//                .setPriority(Notification.PRIORITY_MAX)
+//                .setSmallIcon(R.drawable.icon)
+//                .setContentTitle("服务器")
+//                .setContentText(content)
+//                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+//                .setWhen(System.currentTimeMillis())
+//                // 向通知添加声音、闪灯和振动效果
+//                .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_ALL | Notification.DEFAULT_SOUND)
+//                .setContentIntent(pendingIntent)
+//                .build();
+//        notifyManager.notify(1, notification);//id要保证唯一
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "MyChannel";
+            String description = "Channel description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("channelId", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        // 创建通知
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channelId")
+                .setSmallIcon(R.drawable.contact_head_icon)
+                .setContentTitle(title)
                 .setContentText(content)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setWhen(System.currentTimeMillis())
-                // 向通知添加声音、闪灯和振动效果
-                .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_ALL | Notification.DEFAULT_SOUND)
-                .setContentIntent(pendingIntent)
-                .build();
-        notifyManager.notify(1, notification);//id要保证唯一
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setSmallIcon(icon);
+
+        // 设置点击通知时的操作
+        if(groupId==0){
+            Intent intent = new Intent(this, ChatFriendActivity.class);
+            intent.putExtra("userName",userName);
+            intent.putExtra("toUserName",toUserName);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            builder.setContentIntent(pendingIntent);
+        }else{
+            Intent intent = new Intent(this, ChatGroupActivity.class);
+            intent.putExtra("userName",userName);
+            intent.putExtra("groupName",groupName);
+            intent.putExtra("groupId",groupId.toString());
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            builder.setContentIntent(pendingIntent);
+        }
+        // 触发通知
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        int notificationId = 1; // 每个通知需要唯一的ID
+        notificationManager.notify(notificationId, builder.build());
     }
 
 
-    //    -------------------------------------websocket心跳检测------------------------------------------------
-
-
-    /**
-     * 开启重连
-     */
 
 
 

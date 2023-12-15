@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.e("MainActivity", "服务与活动成功绑定");
             binder = (JWebSocketClientService.JWebSocketClientBinder) iBinder;
             jWebSClientService = binder.getService();
+            jWebSClientService.setUsername(mAccount.getText().toString());
+            Log.e("MainActivity","onServiceConnected:"+mAccount.getText().toString());
             client = jWebSClientService.client;
             Log.e("MainActivity","onServiceConnected");
             System.out.println(client==null?"yes":"no");

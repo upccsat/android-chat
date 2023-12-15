@@ -211,6 +211,7 @@ public class ChatGroupActivity extends AppCompatActivity implements View.OnClick
                     jsonObject.put("toUserName","none");
                     jsonObject.put("content", content);
                     jsonObject.put("sendTime",formattedTime);
+                    jsonObject.put("groupName",groupName);
                     jsonObject.put("groupId",groupId);
                 } catch (JSONException e) {
                     e.printStackTrace();

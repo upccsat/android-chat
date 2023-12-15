@@ -43,6 +43,7 @@ public class SessionPool {
         String toUserName=jsonObject.getString("toUserName");
         String content = jsonObject.getString("content");
         String sendTime = jsonObject.getString("sendTime");
+        String groupName=jsonObject.getString("groupName");
         Integer groupId=Integer.parseInt(jsonObject.getString("groupId"));
 
         JSONObject jsonObject1=new JSONObject();
@@ -50,6 +51,7 @@ public class SessionPool {
         jsonObject1.put("toUserName",toUserName);
         jsonObject1.put("content",content);
         jsonObject1.put("sendTime",sendTime);
+        jsonObject1.put("groupName",groupName);
         jsonObject1.put("groupId",groupId.toString());
 
         UserServiceImpl userService = (UserServiceImpl) SpringUtil.getBean(UserServiceImpl.class);
