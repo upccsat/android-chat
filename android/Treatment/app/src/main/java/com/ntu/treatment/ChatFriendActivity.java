@@ -17,12 +17,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.ntu.treatment.adapter.Adapter_ChatMessage;
 import com.ntu.treatment.im.JWebSocketClient;
 import com.ntu.treatment.im.JWebSocketClientService;
 import com.ntu.treatment.modle.ChatMessage;
+import com.ntu.treatment.util.GetUrl;
 import com.ntu.treatment.util.Util;
 
 import org.json.JSONException;
@@ -31,7 +38,11 @@ import org.json.JSONObject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import cz.msebera.android.httpclient.Header;
 
 public class ChatFriendActivity extends AppCompatActivity implements View.OnClickListener {
     private Context mContext;
@@ -39,6 +50,7 @@ public class ChatFriendActivity extends AppCompatActivity implements View.OnClic
     private Button btn_send;
     private EditText et_content;
     private JWebSocketClientService.JWebSocketClientBinder binder;
+    private String url;
 
     private String userName;
     private String toUserName;
@@ -47,16 +59,23 @@ public class ChatFriendActivity extends AppCompatActivity implements View.OnClic
     private JWebSocketClientService jWebSClientService;
     private JWebSocketClient client;
     private ChatFriendActivity.ChatMessageReceiver chatMessageReceiver;
+    private TextView toUserNameText;
     private class ChatMessageReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
             String message=intent.getStringExtra("message");
+            Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
             com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(message);
             mContext=ChatFriendActivity.this;
             String fromUserName=jsonObject.getString("fromUserName");
             String content=jsonObject.getString("content");
-            String toUserName1=jsonObject.getString("toUserName");//这是传过来的消息的groupId
-            if(toUserName1==toUserName){
+            String toUserName1=jsonObject.getString("toUserName");
+            Log.e("ChatFriendActivity","toUserName:"+toUserName);
+            Log.e("ChatFriendActivity","toUserName1:"+toUserName1);
+            Log.e("ChatFriendActivity","fromUserName:"+fromUserName);
+            Log.e("ChatFriendActivity","isEqual"+(fromUserName.equals(toUserName)));
+            if(fromUserName.equals(toUserName)){//这里的tousername是当前的联系人，tousername1是当前用户
+                Log.e("ChatFriendActivity",toUserName);
                 ChatMessage chatMessage=new ChatMessage();
                 chatMessage.setContent(content);
                 chatMessage.setFromUserName(fromUserName);
@@ -91,10 +110,52 @@ public class ChatFriendActivity extends AppCompatActivity implements View.OnClic
         userName=intent.getStringExtra("userName");
         toUserName=intent.getStringExtra("toUserName");
 
+        toUserNameText=findViewById(R.id.tv_groupOrContactName);
+        toUserNameText.setText(toUserName);
         Util util = new Util();
         util.setUsernameNameText(userName);
 
         mContext=ChatFriendActivity.this;
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put("userNameNow",userName );
+        params.put("userNameToShow",toUserName);
+        url= GetUrl.url+"/user/getHistorySingle";
+        client.post(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String response=new String(responseBody);
+                        System.out.println(response);
+                        com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(response);
+                        JSONArray friendsList=jsonObject.getJSONArray("history_single_list");
+                        for(int i=0;i<friendsList.size();i++){
+                            com.alibaba.fastjson.JSONObject friendObject=friendsList.getJSONObject(i);
+                            String fromUserName=friendObject.getString("fromUserName");
+                            String content=friendObject.getString("content");
+                            String sendTime=friendObject.getString("sendTime");
+                            ChatMessage chatMessage=new ChatMessage();
+                            chatMessage.setTime(sendTime);
+                            chatMessage.setContent(content);
+                            chatMessage.setFromUserName(fromUserName);
+                            if(fromUserName.equals(userName)){
+                                chatMessage.setIsMeSend(1);
+                            }else{
+                                chatMessage.setIsMeSend(0);
+                            }
+                            chatMessageList.add(chatMessage);
+                        }
+                        initChatMsgListView();
+                    }
+                });
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(ChatFriendActivity.this, "Post请求失败！", Toast.LENGTH_SHORT).show();
+            }
+        });
         bindService();
         doRegisterReceiver();
 

@@ -53,7 +53,7 @@ public class SessionPool {
         jsonObject1.put("groupId",groupId.toString());
 
         UserServiceImpl userService = (UserServiceImpl) SpringUtil.getBean(UserServiceImpl.class);
-        if(groupId==0&&toUserName!="none"){
+        if(groupId==0&&!toUserName.equals("none")){
             HistorySingle historySingle =new HistorySingle(fromUserName,toUserName,content,sendTime);
             Session session = sessions.get(toUserName);
             if (session != null){
@@ -62,18 +62,17 @@ public class SessionPool {
             }else{
                 userService.addHistorySingle(historySingle);
             }
-        }else if(groupId!=0&&toUserName=="none"){
+        }else if(groupId!=0&&toUserName.equals("none")){
             HistoryGroup historyGroup=new HistoryGroup(groupId,fromUserName,content,sendTime);
             List<String> usernames=userService.getUserNameFromGroup(groupId);
             for(String username:usernames){
                 Session session=sessions.get(username);
-                if(session!=null){
+                if(session!=null&&!username.equals(fromUserName)){
                     session.getAsyncRemote().sendText(jsonObject1.toString());
-                    userService.addHistoryGroup(historyGroup);
-                }else{
-                    userService.addHistoryGroup(historyGroup);
                 }
             }
+            System.out.println(123);
+            userService.addHistoryGroup(historyGroup);
         }
     }
 }

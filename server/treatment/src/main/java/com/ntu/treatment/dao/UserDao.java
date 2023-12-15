@@ -28,7 +28,7 @@ public interface UserDao {
     Integer addGroupMember(String username,Integer currentGroupId);
     Integer getGroupId(String groupName,String owner);
     List<String> getUserNameFromGroup(Integer groupId);
-    List<HistoryGroup> getHistoryGroup(String userNameNow,Integer groupIdToShow);
+    List<HistoryGroup> getHistoryGroup(Integer groupIdTo);
     Integer addHistoryGroup(HistoryGroup historyGroup);
     //一对一模块
     List<String> getAllFriendsFrom1(String username);

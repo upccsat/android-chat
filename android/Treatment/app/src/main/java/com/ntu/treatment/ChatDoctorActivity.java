@@ -83,7 +83,7 @@ public class ChatDoctorActivity extends AppCompatActivity implements View.OnClic
             ChatMessage chatMessage=new ChatMessage();
             chatMessage.setContent(message);
             chatMessage.setIsMeSend(0);
-            chatMessage.setIsRead(1);
+
             chatMessage.setTime(System.currentTimeMillis()+"");
             chatMessageList.add(chatMessage);
             initChatMsgListView();
@@ -203,7 +203,6 @@ public class ChatDoctorActivity extends AppCompatActivity implements View.OnClic
                     ChatMessage chatMessage=new ChatMessage();
                     chatMessage.setContent(content);
                     chatMessage.setIsMeSend(1);
-                    chatMessage.setIsRead(1);
                     chatMessage.setTime(System.currentTimeMillis()+"");
                     chatMessageList.add(chatMessage);
                     initChatMsgListView();

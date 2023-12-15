@@ -244,43 +244,12 @@ public class JWebSocketClientService extends Service {
 
 
     //    -------------------------------------websocket心跳检测------------------------------------------------
-    private static final long HEART_BEAT_RATE = 10 * 1000;//每隔10秒进行一次对长连接的心跳检测
-    private Handler mHandler = new Handler();
-    private Runnable heartBeatRunnable = new Runnable() {
-        @Override
-        public void run() {
-            Log.e("JWebSocketClientService", "心跳包检测websocket连接状态");
-            if (client != null) {
-                if (client.isClosed()) {
-                    reconnectWs();
-                }
-            } else {
-                //如果client已为空，重新初始化连接
-                client = null;
-                initSocketClient();
-            }
-            //每隔一定的时间，对长连接进行一次心跳检测
-            mHandler.postDelayed(this, HEART_BEAT_RATE);
-        }
-    };
+
 
     /**
      * 开启重连
      */
-    private void reconnectWs() {
-        mHandler.removeCallbacks(heartBeatRunnable);
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Log.e("JWebSocketClientService", "开启重连");
-                    client.reconnectBlocking();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
+
 
 
 }

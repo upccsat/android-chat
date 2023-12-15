@@ -13,6 +13,7 @@ import com.ntu.treatment.modle.ChatMessage;
 /*import com.yxc.websocketclientdemo.R;
 import com.yxc.websocketclientdemo.modle.ChatMessage;*/
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -63,7 +64,7 @@ public class Adapter_ChatMessage extends BaseAdapter {
         String content = mChatMessage.getContent();
         String time = formatTime(mChatMessage.getTime());
         int isMeSend = mChatMessage.getIsMeSend();
-        int isRead = mChatMessage.getIsRead();////是否已读（0未读 1已读）
+        String fromUserName=mChatMessage.getFromUserName();
         final ViewHolder holder;
         if (view == null) {
             holder = new ViewHolder();
@@ -72,11 +73,13 @@ public class Adapter_ChatMessage extends BaseAdapter {
                 holder.tv_content = view.findViewById(R.id.tv_content);
                 holder.tv_sendtime = view.findViewById(R.id.tv_sendtime);
                 holder.tv_display_name = view.findViewById(R.id.tv_display_name);
+                holder.tv_display_name.setText(fromUserName);
+                holder.tv_display_name.setVisibility(View.VISIBLE);
             } else {
                 view = inflater.inflate(R.layout.item_chat_send_text, viewGroup, false);
                 holder.tv_content = view.findViewById(R.id.tv_content);
                 holder.tv_sendtime = view.findViewById(R.id.tv_sendtime);
-                holder.tv_isRead = view.findViewById(R.id.tv_isRead);
+
             }
 
             view.setTag(holder);
@@ -85,26 +88,13 @@ public class Adapter_ChatMessage extends BaseAdapter {
         }
 
 
+
         holder.tv_sendtime.setText(time);
         holder.tv_content.setVisibility(View.VISIBLE);
         holder.tv_content.setText(content);
 
 
         //如果是自己发送才显示未读已读
-        if (isMeSend == 1) {
-            if (isRead == 0) {
-                holder.tv_isRead.setText("未读");
-                holder.tv_isRead.setTextColor(context.getResources().getColor(R.color.jmui_jpush_blue));
-            } else if (isRead == 1) {
-                holder.tv_isRead.setText("已读");
-                holder.tv_isRead.setTextColor(Color.GRAY);
-            } else {
-                holder.tv_isRead.setText("");
-            }
-        }else{
-            holder.tv_display_name.setVisibility(View.VISIBLE);
-            holder.tv_display_name.setText("对方");
-        }
 
         return view;
     }
@@ -121,9 +111,15 @@ public class Adapter_ChatMessage extends BaseAdapter {
      * @return
      */
     private String formatTime(String timeMillis) {
-        long timeMillisl= Long.parseLong(timeMillis);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date(timeMillisl);
-        return simpleDateFormat.format(date);
+        try {
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = inputDateFormat.parse(timeMillis);
+
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return outputDateFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace(); // Handle the parse exception as needed
+            return null; // Return an appropriate value, or throw an exception
+        }
     }
 }

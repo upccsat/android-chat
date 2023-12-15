@@ -27,6 +27,7 @@
             <TextView
                 android:id="@+id/tv_display_name"
                 style="@style/jmui_chat_display_name_style"
+                android:text="1231231231"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/jmui_avatar_iv"/>

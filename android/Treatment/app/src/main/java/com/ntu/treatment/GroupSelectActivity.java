@@ -132,6 +132,7 @@ public class GroupSelectActivity extends AppCompatActivity {
                                 Intent intent=new Intent();
                                 intent.putExtra("userName",userName);
                                 intent.putExtra("groupId",groupId.toString());
+                                intent.putExtra("groupName",textView1.getText().toString());
                                 intent.setClass(GroupSelectActivity.this,ChatGroupActivity.class);
                                 startActivity(intent);
                             }

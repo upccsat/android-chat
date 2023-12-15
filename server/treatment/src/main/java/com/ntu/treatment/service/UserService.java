@@ -25,8 +25,9 @@ public interface UserService {
     Integer getGroupId(String groupName,String owner);
 
     List<String> getUserNameFromGroup(Integer groupId);
-    List<HistoryGroup> getHistoryGroup(String userNameNow,Integer groupId);
+    List<HistoryGroup> getHistoryGroup(Integer groupId);
     Boolean addHistoryGroup(HistoryGroup historyGroup);
+
 
     //一对一模块
     List<Friend> getAllFriends(String userName);

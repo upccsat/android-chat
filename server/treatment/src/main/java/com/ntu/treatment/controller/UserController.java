@@ -94,6 +94,16 @@ public class UserController {
         System.out.println("111");
         return userService.getGroupId(groupName,owner);
     }
+    @RequestMapping("/getHistoryGroup")
+    public JSONObject findHistoryGroup(String groupIdStr){
+        Integer groupId=Integer.parseInt(groupIdStr);
+        List<HistoryGroup> list=userService.getHistoryGroup(groupId);
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = JSONArray.parseArray(JSON.toJSONString(list));
+        jsonObject.put("history_group_list", jsonArray.toString());
+        System.out.println(jsonArray.toString());
+        return jsonObject;
+    }
     @RequestMapping("/getFriends")
     public JSONObject findAllFriends(String username){
         List<Friend> list = userService.getAllFriends(username);//返回friends的名字和头像的地址

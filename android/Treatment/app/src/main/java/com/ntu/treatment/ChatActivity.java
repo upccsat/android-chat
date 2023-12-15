@@ -82,7 +82,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             ChatMessage chatMessage=new ChatMessage();
             chatMessage.setContent(message);
             chatMessage.setIsMeSend(0);
-            chatMessage.setIsRead(1);
+
             chatMessage.setTime(System.currentTimeMillis()+"");
             chatMessageList.add(chatMessage);
             initChatMsgListView();
@@ -210,7 +210,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     ChatMessage chatMessage=new ChatMessage();
                     chatMessage.setContent(content);
                     chatMessage.setIsMeSend(1);
-                    chatMessage.setIsRead(1);
                     chatMessage.setTime(System.currentTimeMillis()+"");
                     chatMessageList.add(chatMessage);
                     initChatMsgListView();

@@ -17,12 +17,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.ntu.treatment.adapter.Adapter_ChatMessage;
 import com.ntu.treatment.im.JWebSocketClient;
 import com.ntu.treatment.im.JWebSocketClientService;
 import com.ntu.treatment.modle.ChatMessage;
+import com.ntu.treatment.util.GetUrl;
 import com.ntu.treatment.util.Util;
 
 import org.json.JSONException;
@@ -33,15 +40,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.msebera.android.httpclient.Header;
+
 public class ChatGroupActivity extends AppCompatActivity implements View.OnClickListener {
     private Context mContext;
     private ListView listView;
     private Button btn_send;
     private EditText et_content;
+    private TextView groupNameText;
     private JWebSocketClientService.JWebSocketClientBinder binder;
 
     private String userName;
     private Integer groupId;
+    private String groupName;
+    private String url;
     private List<ChatMessage> chatMessageList = new ArrayList<>();//消息列表
     private Adapter_ChatMessage adapter_chatMessage;
     private JWebSocketClientService jWebSClientService;
@@ -85,15 +97,59 @@ public class ChatGroupActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat_friend);
+        setContentView(R.layout.activity_chat_group);
 
         Intent intent=getIntent();
         userName=intent.getStringExtra("userName");
         groupId=Integer.parseInt(intent.getStringExtra("groupId"));
+        groupName=intent.getStringExtra("groupName");
+
+        groupNameText=findViewById(R.id.tv_groupOrContactName);
+        groupNameText.setText(groupName);
 
         mContext=ChatGroupActivity.this;
         doRegisterReceiver();
 
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+        params.put("groupIdStr",groupId.toString());
+        url= GetUrl.url+"/user/getHistoryGroup";
+        client.post(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String response=new String(responseBody);
+                        System.out.println(response);
+                        com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(response);
+                        JSONArray friendsList=jsonObject.getJSONArray("history_group_list");
+                        for(int i=0;i<friendsList.size();i++){
+                            com.alibaba.fastjson.JSONObject friendObject=friendsList.getJSONObject(i);
+                            String fromUserName=friendObject.getString("fromUserName");
+                            String content=friendObject.getString("content");
+                            String sendTime=friendObject.getString("sendTime");
+                            ChatMessage chatMessage=new ChatMessage();
+                            chatMessage.setTime(sendTime);
+                            chatMessage.setContent(content);
+                            chatMessage.setFromUserName(fromUserName);
+                            if(fromUserName.equals(userName)){
+                                chatMessage.setIsMeSend(1);
+                            }else{
+                                chatMessage.setIsMeSend(0);
+                            }
+                            chatMessageList.add(chatMessage);
+                        }
+                        initChatMsgListView();
+                    }
+                });
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(ChatGroupActivity.this, "Post请求失败！", Toast.LENGTH_SHORT).show();
+            }
+        });
+        bindService();
         findViewById();
         initView();
     }
@@ -150,6 +206,7 @@ public class ChatGroupActivity extends AppCompatActivity implements View.OnClick
                 JSONObject jsonObject = new JSONObject();
 
                 try {
+
                     jsonObject.put("fromUserName",userName);
                     jsonObject.put("toUserName","none");
                     jsonObject.put("content", content);
@@ -188,5 +245,9 @@ public class ChatGroupActivity extends AppCompatActivity implements View.OnClick
         adapter_chatMessage = new Adapter_ChatMessage(mContext, chatMessageList);
         listView.setAdapter(adapter_chatMessage);
         listView.setSelection(chatMessageList.size());
+    }
+    private void bindService() {
+        Intent bindIntent = new Intent(mContext, JWebSocketClientService.class);
+        bindService(bindIntent, serviceConnection, BIND_AUTO_CREATE);
     }
 }

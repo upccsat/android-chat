@@ -33,11 +33,11 @@
     <select id="getUserNameFromGroup" resultType="String" parameterType="Integer">
         select username from groupmembers where groupid=#{groupId}
     </select>
-    <select id="getHistoryGroup" resultType="HistoryGroup">
-        select * from historygroup where groupid=#{groupIdToShow} and fromusername=#{userNameNow}
+    <select id="getHistoryGroup" resultType="HistoryGroup" parameterType="Integer">
+        select * from historygroup where groupid=#{groupId}
     </select>
     <insert id="addHistoryGroup">
-        insert into historygroup (groupid,fromusername,content,sendtime) values (#{groupId},#{fromUserName},#{content},#{sendTime}})
+        insert into historygroup (groupid,fromusername,content,sendtime) values (#{groupId},#{fromUserName},#{content},#{sendTime})
     </insert>
 
 
@@ -54,12 +54,12 @@
         select image from users where username=#{username}
     </select>
     <select id="getHistorySingle" resultType="HistorySingle" parameterType="String">
-        select * from historySingle where fromUserName=#{userNameNow} and toUserName=#{userNameToShow}
-        union
-        select * from history Single where fromUserName=#{userNameToShow} and toUserName=#{userNameToShow}
+        SELECT * FROM historySingle
+        WHERE (fromUserName = #{userNameNow} AND toUserName = #{userNameToShow})
+        OR (fromUserName = #{userNameToShow} AND toUserName = #{userNameNow})
     </select>
     <insert id="addHistorySingle" >
-        insert into historysingle(fromUserName,toUserName,content,sendTime) values (#{fromUserName},#{toUserName},#{content},#{sendTime})
+        insert into historysingle (fromUserName,toUserName,content,sendTime) values (#{fromUserName},#{toUserName},#{content},#{sendTime})
     </insert>
     <insert id="addFriend">
         insert into friends(username1,username2) values(#{userNameNow},#{userNameToAdd})

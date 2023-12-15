@@ -140,8 +140,8 @@ public class UserServiceImpl implements UserService {
         List<String> result=userDao.getUserNameFromGroup(groupId);
         return result;
     }
-    public List<HistoryGroup> getHistoryGroup(String userNameNow,Integer groupId){
-        List<HistoryGroup> result=userDao.getHistoryGroup(userNameNow,groupId);
+    public List<HistoryGroup> getHistoryGroup(Integer groupId){
+        List<HistoryGroup> result=userDao.getHistoryGroup(groupId);
         return result;
     }
     public Boolean addHistoryGroup(HistoryGroup historyGroup){
