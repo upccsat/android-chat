@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/img1"
+        android:src="@drawable/fa_1"
+        android:layout_width="0px"
+        android:layout_weight="2"
+        android:layout_height="100px"/>
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_weight="6"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/qmc"
+            android:textColor="#FF0000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="222222"/>
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="33333"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="上午 10:15" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
