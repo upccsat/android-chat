@@ -53,6 +53,12 @@ public class SelectFriendsActivity extends AppCompatActivity {
         userNames=new ArrayList<>();
         images=new ArrayList<>();
         data=new ArrayList<>();
+
+        ImageButtonFragment fragment = ImageButtonFragment.newInstance(userName);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+
         listView=findViewById(R.id.listView);
 
         btnConfirm.setOnClickListener(new View.OnClickListener() {

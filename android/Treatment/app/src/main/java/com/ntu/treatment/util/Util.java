@@ -12,6 +12,6 @@ public class Util {
     }
     public void setUsernameNameText(String name){
         username = name;
-        ws = "ws://192.168.43.76:8080/websocket/"+username;
+        ws = "ws://172.24.49.235:8080/websocket/"+username;
     }
 }

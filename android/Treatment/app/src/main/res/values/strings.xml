@@ -33,4 +33,6 @@
     <string name="hello_contact_fragment">Hello Contact fragment</string>
     <string name="hello_find_fragment">Hello Find fragment</string>
     <string name="hello_me_fragment">Hello Me fragment</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

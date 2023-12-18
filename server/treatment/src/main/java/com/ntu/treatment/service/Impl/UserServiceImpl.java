@@ -42,6 +42,20 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public User getUserInfo(String userName){
+        return userDao.getUserInfo(userName);
+    }
+
+    @Override
+    public Boolean updateUserInfo(User user){
+        int flag= userDao.updateUserInfo(user);
+        if(flag==1){
+            return true;
+        }else{
+            return false;
+        }
+    }
     //一对一模块
     //找到某用户所有的朋友
     @Override

@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                      */
                     Intent intent = new Intent();
                     intent.putExtra("userName",mAccount.getText().toString());
-                    intent.setClass(MainActivity.this,EnterActivity.class);
+                    intent.setClass(MainActivity.this, FriendSelectActivity.class);
                     startActivity(intent);
                 }else {
                     Toast.makeText(MainActivity.this, "账号或密码错误！", Toast.LENGTH_SHORT).show();

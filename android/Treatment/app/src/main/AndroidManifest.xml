@@ -27,6 +27,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ModifyUserInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".SelectFriendsActivity"
             android:exported="false" />
         <activity
@@ -50,13 +56,6 @@
         <activity
             android:name=".GroupSelectActivity"
             android:exported="false" />
-        <activity
-            android:name=".EnterActivity"
-            android:exported="false" />
-        <activity android:name=".PatientHistoryActivity" />
-        <activity android:name=".EditPatientInfoActivity" />
-        <activity android:name=".ChatDoctorActivity" />
-        <activity android:name=".ChatActivity" />
 
         <service
             android:name=".im.JWebSocketClientService"
@@ -68,8 +67,6 @@
             android:exported="false"
             android:process=":gray" />
 
-        <activity android:name=".FirstPageActivity" />
-        <activity android:name=".RegisterDoctorActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

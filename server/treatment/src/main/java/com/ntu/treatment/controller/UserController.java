@@ -41,6 +41,12 @@ public class UserController {
     }
     @RequestMapping("/register")
     public String registerDoctor(User user){
+        LocalDateTime currentTime = LocalDateTime.now();
+        // 定义日期时间格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // 将LocalDateTime转换为字符串
+        String formattedTime = currentTime.format(formatter);
+        user.setSubmitTime(formattedTime);
         Boolean flag = userService.register(user);
         if (flag){
             return "true";
@@ -48,6 +54,28 @@ public class UserController {
             return "false";
         }
     }
+    @RequestMapping("/getUserInfo")
+    public JSONObject getUserInfo(String userName){
+        User user=userService.getUserInfo(userName);
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("userName",user.getUsername());
+        jsonObject.put("birthday",user.getBirthday());
+        jsonObject.put("image",user.getImage());
+        jsonObject.put("createTime",user.getSubmitTime());
+        jsonObject.put("email",user.getEmailAddress());
+        jsonObject.put("phonenum",user.getPhonenum());
+        return jsonObject;
+    }
+    @RequestMapping("/updateUserInfo")
+    public String updateUserInfo(User user){
+        Boolean flag=userService.updateUserInfo(user);
+        if(flag){
+            return "true";
+        }else{
+            return "false";
+        }
+    }
+
     @RequestMapping("/getGroups")
     public JSONObject findAllGroups(String username){
         List<Integer> groupIds=userService.getAllGroupsId(username);
@@ -104,6 +132,7 @@ public class UserController {
         System.out.println(jsonArray.toString());
         return jsonObject;
     }
+
     @RequestMapping("/getFriends")
     public JSONObject findAllFriends(String username){
         List<Friend> list = userService.getAllFriends(username);//返回friends的名字和头像的地址

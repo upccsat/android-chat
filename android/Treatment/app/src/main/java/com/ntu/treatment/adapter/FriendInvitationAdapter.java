@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,9 +80,12 @@ public class FriendInvitationAdapter extends BaseAdapter {
             Object value = dataItem.get(key);
 
             // 在这里将数据显示在界面上，例如使用 findViewById 找到视图并设置数据
-            TextView textView = convertView.findViewById(viewId);
-            if (textView != null) {
+            if (convertView.findViewById(viewId) instanceof TextView) {
+                TextView textView = convertView.findViewById(viewId);
                 textView.setText(value != null ? value.toString() : "");
+            } else if (convertView.findViewById(viewId) instanceof ImageView) {
+                ImageView imageView = convertView.findViewById(viewId);
+                imageView.setImageResource(R.drawable.contact_head_icon);
             }
         }
         Button btnAgree=convertView.findViewById(R.id.btnAgree);

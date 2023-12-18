@@ -60,6 +60,11 @@ public class ViewInvitationActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_invitation);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new ImageButtonFragment())
+                .commit();
+
         listView=findViewById(R.id.listView);
         Intent intent=getIntent();
         userName=intent.getStringExtra("userName");
@@ -100,6 +105,7 @@ public class ViewInvitationActivity extends AppCompatActivity  {
                         String userName=friendObject.getString("fromUserName");
                         Integer isReceived=friendObject.getInteger("isReceived");
                         fromUserNames.add(userName);
+                        images.add("");
                         isReceiveds.add(isReceived);
                     }
                 }
@@ -108,8 +114,8 @@ public class ViewInvitationActivity extends AppCompatActivity  {
                     map.put("fromUserName",fromUserNames.get(i));
                     data.add(map);
                 }
-                String[] from={"fromUserName"};
-                Integer[] to={R.id.textView};
+                String[] from={"fromUserName","image"};
+                Integer[] to={R.id.textView,R.id.imageView};
                 FriendInvitationAdapter friendInvitationAdapter=new FriendInvitationAdapter(ViewInvitationActivity.this,
                         data,
                         R.layout.friendinvitation_list_view,

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,11 +40,17 @@ public class GroupSelectActivity extends AppCompatActivity {
     private List<Map<String, Object>> data;
     private Integer groupId;
     private Button addGroupButton;
+    private Button toFriendsSelect;
+    private Button btnFindGroup;
+    private EditText etFindGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_select);
+
+
+
         Intent intent1 = getIntent();
         userName = intent1.getStringExtra("userName");
         url = GetUrl.url + "/user/getGroups";
@@ -51,7 +58,16 @@ public class GroupSelectActivity extends AppCompatActivity {
         images = new ArrayList<>();
         owners = new ArrayList<>();
         data = new ArrayList<>();
+
+        ImageButtonFragment fragment = ImageButtonFragment.newInstance(userName);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+
         addGroupButton = findViewById(R.id.addGroupButton);
+        toFriendsSelect=findViewById(R.id.toFriendsSelect);
+        btnFindGroup=findViewById(R.id.findGroupButton);
+        etFindGroup=findViewById(R.id.findGroup);
         addGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +75,32 @@ public class GroupSelectActivity extends AppCompatActivity {
                 intent.putExtra("userName", userName);
                 intent.setClass(GroupSelectActivity.this, AddGroupActivity.class);
                 startActivity(intent);
+            }
+        });
+        toFriendsSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                intent.putExtra("userName",userName);
+                intent.setClass(GroupSelectActivity.this, FriendSelectActivity.class);
+                startActivity(intent);
+            }
+        });
+        btnFindGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                data.clear();
+                String findGroupText=etFindGroup.getText().toString();
+                for(int i=0;i<groupNames.size();i++){
+                    if(groupNames.get(i).contains(findGroupText)){
+                        Map<String,Object> map=new HashMap<>();
+                        map.put("groupName",groupNames.get(i));
+                        map.put("image",images.get(i));
+                        map.put("owner",owners.get(i));
+                        data.add(map);
+                    }
+                }
+                updateUi();
             }
         });
         listView = findViewById(R.id.listView);

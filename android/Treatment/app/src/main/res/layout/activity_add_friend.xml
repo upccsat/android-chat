@@ -28,4 +28,10 @@
         android:textColor="@android:color/white"
         android:padding="16dp" />
 
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

@@ -14,6 +14,15 @@
         insert into users (username,password)values (#{username},#{password})
     </insert>
 
+    <select id="getUserInfo" resultType="User" parameterType="String">
+        select * from users where username=#{username}
+    </select>
+    <update id="updateUserInfo">
+        update users
+        set birthday=#{birthday},phonenum=#{phonenum},emailAddress=#{emailAddress}
+        where username=#{username}
+    </update>
+
     <select id="getAllGroupsId" resultType="Integer" parameterType="String">
         select groupId from groupmembers where username=#{username}
     </select>

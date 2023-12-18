@@ -39,11 +39,14 @@ public class FriendSelectActivity extends AppCompatActivity {
     private Button addFriendButton;
     private Button viewInvitationButton;
     private Button findFriendButton;
+    private Button toGroupsSelect;
     private EditText findFriend;
+    private List<String> findUserNames;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_select);
+
 
         Intent intent1=getIntent();
         userName=intent1.getStringExtra("userName");
@@ -52,9 +55,16 @@ public class FriendSelectActivity extends AppCompatActivity {
         viewInvitationButton=findViewById(R.id.viewInvitationButton);
         findFriendButton=findViewById(R.id.findFriendButton);
         findFriend=findViewById(R.id.findFriend);
+        toGroupsSelect=findViewById(R.id.toGroupsSelect);
+
         userNames=new ArrayList<>();
         images=new ArrayList<>();
         data=new ArrayList<>();
+
+        ImageButtonFragment fragment = ImageButtonFragment.newInstance(userName);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
 
         addFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +73,31 @@ public class FriendSelectActivity extends AppCompatActivity {
                 intent.putExtra("userName",userName);
                 intent.setClass(FriendSelectActivity.this,AddFriendActivity.class);
                 startActivity(intent);
+            }
+        });
+        toGroupsSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                intent.setClass(FriendSelectActivity.this, GroupSelectActivity.class);
+                intent.putExtra("userName",userName);
+                startActivity(intent);
+            }
+        });
+        findFriendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                data.clear();
+                String etFindFriend=findFriend.getText().toString();
+                for(int i=0;i<userNames.size();i++){
+                   if(userNames.get(i).contains(etFindFriend)){
+                       Map<String,Object> map=new HashMap<>();
+                       map.put("userName",userNames.get(i));
+                       map.put("image",images.get(i));
+                       data.add(map);
+                   }
+               }
+               updateUi();
             }
         });
         viewInvitationButton.setOnClickListener(new View.OnClickListener() {

@@ -10,10 +10,17 @@
     tools:context=".GroupSelectActivity">
 
     <Button
-        android:id="@+id/addGroupButton"
+        android:id="@+id/toFriendsSelect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:text="我的好友"
+        />
+    <Button
+        android:id="@+id/addGroupButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toFriendsSelect"
         android:text="添加群聊"
         />
     <EditText
@@ -36,10 +43,25 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:text="查找" />
-    <ListView
-        android:id="@+id/listView"
+    <LinearLayout
+        android:layout_height="500dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/findGroupButton"/>
+        android:id="@+id/l1"
+        android:layout_below="@+id/findGroupButton">
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/findFriend"
+            />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

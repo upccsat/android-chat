@@ -41,4 +41,9 @@ public interface UserDao {
     Integer changeFriendInvitationStatus(String fromUserName,String toUserName);
     List<FriendInvitation> getAllFriendInvitation(String userName);
 
+
+
+    User getUserInfo(String userName);
+    Integer updateUserInfo(User user);
+
 }

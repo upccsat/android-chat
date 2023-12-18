@@ -52,6 +52,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         RequestParams params = new RequestParams();
         params.put("username", username.getText().toString());
         params.put("password", password.getText().toString());
+
         System.out.println("这是用户名和密码："+username.getText().toString());
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override

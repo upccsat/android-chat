@@ -44,6 +44,12 @@ public class AddGroupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_group);
+
+        ImageButtonFragment fragment = ImageButtonFragment.newInstance(userName);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+
         groupId=0;
         Intent intent=getIntent();
         userName=intent.getStringExtra("userName");

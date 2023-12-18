@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
@@ -21,10 +20,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.alibaba.fastjson.JSON;
-import com.ntu.treatment.ChatActivity;
 import com.ntu.treatment.ChatFriendActivity;
 import com.ntu.treatment.ChatGroupActivity;
-import com.ntu.treatment.MainActivity;
 import com.ntu.treatment.R;
 import com.ntu.treatment.util.Util;
 

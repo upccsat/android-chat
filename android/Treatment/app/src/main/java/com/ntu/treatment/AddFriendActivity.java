@@ -30,10 +30,17 @@ public class AddFriendActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend);
+
+
         Intent intent=getIntent();
         userName=intent.getStringExtra("userName");
         btnAddFriend=findViewById(R.id.btnAddFriend);
         etAddFriend=findViewById(R.id.etFriendName);
+
+        ImageButtonFragment fragment = ImageButtonFragment.newInstance(userName);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
 
         btnAddFriend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +54,7 @@ public class AddFriendActivity extends AppCompatActivity {
                 client.post(url, params, new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        updateUi(responseBody.toString());
+                        updateUi(new String(responseBody));
                     }
 
                     @Override
@@ -63,9 +70,10 @@ public class AddFriendActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-               if(response=="true"){
+               if(response.equals("true")){
                    Toast.makeText(AddFriendActivity.this,"添加成功，即将返回好友列表页面,请等待确认",Toast.LENGTH_SHORT);
                    Intent intent=new Intent();
+                   intent.putExtra("userName",userName);
                    intent.setClass(AddFriendActivity.this,FriendSelectActivity.class);
                    startActivity(intent);
                    finish();

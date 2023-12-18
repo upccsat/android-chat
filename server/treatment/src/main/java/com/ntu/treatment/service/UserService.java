@@ -16,6 +16,10 @@ public interface UserService {
 
     Boolean register(User user);
 
+    User getUserInfo(String userName);
+
+    Boolean updateUserInfo(User user);
+
     //群聊模块
     List<Integer> getAllGroupsId(String username);
     List<Group> getGroups(List<Integer> groupIds);
