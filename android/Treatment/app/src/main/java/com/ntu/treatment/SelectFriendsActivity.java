@@ -93,9 +93,8 @@ public class SelectFriendsActivity extends AppCompatActivity {
         for(int i=0;i<friendsList.size();i++){
             JSONObject friendObject=friendsList.getJSONObject(i);
             String userName=friendObject.getString("userName");
-            String image=friendObject.getString("image");
             userNames.add(userName);
-            images.add(image);
+            images.add(userName);
         }
         for(int i=0;i<userNames.size();i++){
             Map<String,Object> map=new HashMap<>();

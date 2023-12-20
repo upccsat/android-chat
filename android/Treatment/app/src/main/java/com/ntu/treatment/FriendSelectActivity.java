@@ -3,6 +3,9 @@ package com.ntu.treatment;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -41,7 +45,7 @@ public class FriendSelectActivity extends AppCompatActivity {
     private Button findFriendButton;
     private Button toGroupsSelect;
     private EditText findFriend;
-    private List<String> findUserNames;
+    private CountDownLatch latch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,22 +130,18 @@ public class FriendSelectActivity extends AppCompatActivity {
             }
         });
     }
+
     private void showFriendsList(final String response){
 
         JSONObject jsonObject = JSON.parseObject(response);
         JSONArray friendsList=jsonObject.getJSONArray("friends_list");
+        //等待所有异步请求完成
+//        latch = new CountDownLatch(1);
         for(int i=0;i<friendsList.size();i++){
             JSONObject friendObject=friendsList.getJSONObject(i);
             String userName=friendObject.getString("userName");
-            String image=friendObject.getString("image");
             userNames.add(userName);
-            images.add(image);
-        }
-        for(int i=0;i<userNames.size();i++){
-            Map<String,Object> map=new HashMap<>();
-            map.put("userName",userNames.get(i));
-            map.put("image",images.get(i));
-            data.add(map);
+            images.add(userName);
         }
         updateUi();
     }
@@ -149,6 +149,12 @@ public class FriendSelectActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                for(int i=0;i<userNames.size();i++){
+                    Map<String,Object> map=new HashMap<>();
+                    map.put("userName",userNames.get(i));
+                    map.put("image",images.get(i));
+                    data.add(map);
+                }
                 String[] from={"userName","image"};
                 Integer[] to={R.id.textView,R.id.imageView};
                FriendsAdapter friendsAdapter=new FriendsAdapter(FriendSelectActivity.this,data,R.layout.friend_list_view,from,to);

@@ -10,7 +10,9 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ntu.treatment.R;
+import com.ntu.treatment.util.GetUrl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class FriendsCheckBoxAdapter extends BaseAdapter {
     private Integer[] to;
     private  List<String> checkedUserNames;
     private CompoundButton.OnCheckedChangeListener checkBoxListener;
+    private String imageUrl;
 
     public List<String> getCheckedUserNames() {
         return checkedUserNames;
@@ -102,16 +105,11 @@ public class FriendsCheckBoxAdapter extends BaseAdapter {
                 checkBox.setTag(textView.getText().toString());
             } else if (convertView.findViewById(viewId) instanceof ImageView) {
                 ImageView imageView = convertView.findViewById(viewId);
-                imageView.setImageResource(R.drawable.contact_head_icon);
-                //TODO 解决imageView资源的选取问题，暂用R.drawable.contact_head_icon代替
-
-                // 在这里设置ImageView的图片资源或路径
-//                if (value instanceof Integer) {
-//                    imageView.setImageResource((Integer) value);
-//                } else if (value instanceof String) {
-//                    // 如果value是String类型，你可以使用加载图片的库，比如Glide或Picasso
-//                    // Glide.with(context).load((String) value).into(imageView);
-//                }
+                imageUrl= GetUrl.url+"/images/"+value;
+                Glide.with(context)
+                        .load(imageUrl)  // 图片的 URL
+                        .error(R.drawable.contact_head_icon)  // 加载失败时显示的图（可选）
+                        .into(imageView);  // 需要更新的 ImageView
             }
         }
         return convertView;

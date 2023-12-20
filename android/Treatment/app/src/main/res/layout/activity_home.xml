@@ -17,6 +17,14 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:src="@drawable/contact_head_icon" />
+        <Button
+            android:id="@+id/btnChangeAvatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageViewCenter"
+            android:layout_marginLeft="15dp"
+            android:text="更换头像"
+            />
     </RelativeLayout>
 
     <LinearLayout

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -35,6 +36,7 @@ public class FriendInvitationAdapter extends BaseAdapter {
     private String userName;
     private List<Integer> isReceiveds;
     private String url;
+    private String imageUrl;
 
 
     public static final String REFRESH_ACTION = "com.example.chatupc.REFRESH_ACTION";
@@ -85,7 +87,11 @@ public class FriendInvitationAdapter extends BaseAdapter {
                 textView.setText(value != null ? value.toString() : "");
             } else if (convertView.findViewById(viewId) instanceof ImageView) {
                 ImageView imageView = convertView.findViewById(viewId);
-                imageView.setImageResource(R.drawable.contact_head_icon);
+                imageUrl= GetUrl.url+"/images/"+value;
+                Glide.with(context)
+                        .load(imageUrl)  // 图片的 URL
+                        .error(R.drawable.contact_head_icon)  // 加载失败时显示的图（可选）
+                        .into(imageView);  // 需要更新的 ImageView
             }
         }
         Button btnAgree=convertView.findViewById(R.id.btnAgree);

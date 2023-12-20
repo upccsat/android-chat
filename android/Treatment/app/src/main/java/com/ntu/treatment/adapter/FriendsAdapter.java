@@ -2,6 +2,7 @@ package com.ntu.treatment.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.ntu.treatment.R;
+import com.ntu.treatment.util.GetUrl;
 
 import org.w3c.dom.Text;
 
@@ -27,6 +30,7 @@ public class FriendsAdapter extends BaseAdapter {
     private int resource;
     private String[] from;
     private Integer[] to;
+    private String imageUrl;
 
 
     public FriendsAdapter(Context context, List<? extends Map<String, ?>> data,
@@ -75,19 +79,14 @@ public class FriendsAdapter extends BaseAdapter {
                 textView.setText(value != null ? value.toString() : "");
             } else if (convertView.findViewById(viewId) instanceof ImageView) {
                 ImageView imageView = convertView.findViewById(viewId);
-                imageView.setImageResource(R.drawable.contact_head_icon);
-                //TODO 解决imageView资源的选取问题，暂用R.drawable.contact_head_icon代替
-
-                // 在这里设置ImageView的图片资源或路径
-//                if (value instanceof Integer) {
-//                    imageView.setImageResource((Integer) value);
-//                } else if (value instanceof String) {
-//                    // 如果value是String类型，你可以使用加载图片的库，比如Glide或Picasso
-//                    // Glide.with(context).load((String) value).into(imageView);
-//                }
+//                imageView.setImageResource(R.drawable.contact_head_icon);
+                imageUrl= GetUrl.url+"/images/"+value;
+                Glide.with(context)
+                        .load(imageUrl)  // 图片的 URL
+                        .error(R.drawable.contact_head_icon)  // 加载失败时显示的图（可选）
+                        .into(imageView);  // 需要更新的 ImageView
             }
         }
         return convertView;
     }
-
 }

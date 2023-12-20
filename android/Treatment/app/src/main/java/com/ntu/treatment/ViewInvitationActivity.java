@@ -105,13 +105,14 @@ public class ViewInvitationActivity extends AppCompatActivity  {
                         String userName=friendObject.getString("fromUserName");
                         Integer isReceived=friendObject.getInteger("isReceived");
                         fromUserNames.add(userName);
-                        images.add("");
+                        images.add(userName);
                         isReceiveds.add(isReceived);
                     }
                 }
                 for(int i=0;i<fromUserNames.size();i++){
                     Map<String,Object> map=new HashMap<>();
                     map.put("fromUserName",fromUserNames.get(i));
+                    map.put("image",images.get(i));
                     data.add(map);
                 }
                 String[] from={"fromUserName","image"};

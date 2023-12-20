@@ -163,4 +163,7 @@
     <color name="bg_tips_normal">#ffe3ded0</color>
     <color name="bg_tips_press">#ffccc8bc</color>
     <color name="contact_indicator_color">#ff33b5e5</color>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
 </resources>

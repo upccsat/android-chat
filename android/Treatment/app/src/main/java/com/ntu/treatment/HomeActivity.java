@@ -3,9 +3,12 @@ package com.ntu.treatment;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,11 +27,13 @@ public class HomeActivity extends AppCompatActivity {
     private String userName;
     private Button btnModifyInfo;
     private Button btnLogout;
+    private Button btnChangeAvatar;
     private TextView textViewName;
     private TextView textViewAge;
     private TextView textViewPhoneNumber;
     private TextView textViewEmail;
     private TextView textViewCreationTime;
+    private ImageView ivAvatar;
     private String url;
     private String birthday;
     private String phonenum;
@@ -40,11 +45,13 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         btnModifyInfo=findViewById(R.id.btnModifyInfo);
         btnLogout=findViewById(R.id.btnLogout);
+        btnChangeAvatar=findViewById(R.id.btnChangeAvatar);
         textViewName=findViewById(R.id.textViewName);
         textViewAge=findViewById(R.id.textViewAge);
         textViewPhoneNumber=findViewById(R.id.textViewPhoneNumber);
         textViewEmail=findViewById(R.id.textViewEmail);
         textViewCreationTime=findViewById(R.id.textViewCreationTime);
+        ivAvatar=findViewById(R.id.imageViewCenter);
         Intent intent = getIntent();
         userName = intent.getStringExtra("userName");
         ImageButtonFragment fragment = ImageButtonFragment.newInstance(userName);
@@ -76,6 +83,15 @@ public class HomeActivity extends AppCompatActivity {
                 finish();
             }
         });
+        btnChangeAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent3=new Intent();
+                intent3.setClass(HomeActivity.this, ChangeAvatarActivity.class);
+                intent3.putExtra("userName",userName);
+                startActivity(intent3);
+            }
+        });
         url= GetUrl.url+ "/user/getUserInfo";
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
@@ -90,6 +106,38 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 Toast.makeText(HomeActivity.this, "Post请求失败！", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //请求头像
+        AsyncHttpClient client1 = new AsyncHttpClient();
+        RequestParams params1 = new RequestParams();
+        params1.put("userName", userName);
+
+        // 替换为你的服务器地址和接口路径
+        String imageUrl = GetUrl.url+"/images/getImage";
+
+        client1.post(imageUrl, params1, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if (statusCode == 200) {
+                    // 在这里处理服务器返回的图片字节数组
+                    handleImageResponse(responseBody);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                //用户未更改头像时服务器返回404
+            }
+        });
+    }
+    private void handleImageResponse(byte[] imageBytes) {
+        // 将字节数组设置给 ImageView 或进行其他处理
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                ivAvatar.setImageBitmap(bitmap);
             }
         });
     }

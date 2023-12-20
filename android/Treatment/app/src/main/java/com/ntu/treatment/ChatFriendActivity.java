@@ -70,7 +70,6 @@ public class ChatFriendActivity extends AppCompatActivity implements View.OnClic
         @Override
         public void onReceive(Context context, Intent intent) {
             String message=intent.getStringExtra("message");
-            Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
             com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(message);
             mContext=ChatFriendActivity.this;
             String fromUserName=jsonObject.getString("fromUserName");

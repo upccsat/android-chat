@@ -45,16 +45,16 @@ public class AddGroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_group);
 
+        groupId=0;
+        Intent intent=getIntent();
+        userName=intent.getStringExtra("userName");
+
         ImageButtonFragment fragment = ImageButtonFragment.newInstance(userName);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
 
-        groupId=0;
-        Intent intent=getIntent();
-        userName=intent.getStringExtra("userName");
         btnCreateGroup=findViewById(R.id.btnAddGroup);
-
         etCreateGroup=findViewById(R.id.etGroupName);
         btnSelectFriend=findViewById(R.id.btnSelectFriend);
         listView=findViewById(R.id.listView);
@@ -170,7 +170,7 @@ public class AddGroupActivity extends AppCompatActivity {
                         //TODO 需要改一下image
                         map.put("userName",i);
                         Log.e("AddGroupActivity","userName:"+i);
-                        map.put("image","");
+                        map.put("image",i);
                         data1.add(map);
                     }
                     String[] from={"userName","image"};
